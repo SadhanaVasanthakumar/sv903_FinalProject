@@ -1,0 +1,283 @@
+CS 210 FINAL PROJECT — SCRAPING SESSION LOG
+AI Headlines Bias Observatory
+
+DATE RUN:        2026-04-21
+STARTED:         11:22:01
+COMPLETED:       ~23:19 (estimated)
+TOTAL RUNTIME:   667 minutes (11.1 hours)
+
+TOOL:            gnews (Google News RSS, no API key required)
+ENVIRONMENT:     VS Code, Windows, Python venv
+QUERIES:         192 across 9 tiers
+TIME WINDOWS:    20 monthly (Aug 2024 → Mar 2026)
+
+PER-WINDOW RESULTS
+========================================================================
+
+Window      Raw       Relevant   Unique    Dupes    Failed   Publishers
+------------------------------------------------------------------------
+2024-08    12,587    10,865      6,500     4,365       0      2,299
+2024-09    13,364    11,480      6,997     4,483       0      2,431
+2024-10    13,611    11,799      7,461     4,338       0      2,523
+2024-11    12,816    10,885      6,743     4,142       0      2,447
+2024-12    12,732    10,951      6,863     4,088       0      2,441
+2025-01    14,399    12,429      7,951     4,478       0      2,607
+2025-02    14,649    12,951      8,321     4,630       0      2,833
+2025-03    14,597    12,872      8,386     4,486       0      2,736
+2025-04    15,150    13,187      8,663     4,524       0      2,790
+2025-05    15,562    13,693      9,030     4,663       0      2,876
+2025-06    15,701    13,792      9,177     4,615       0      2,875
+2025-07    15,896    14,291      9,804     4,487       0      2,968
+2025-08    15,906    14,132      9,573     4,559       0      2,892
+2025-09    15,779    13,993      9,823     4,170       0      3,044
+2025-10    16,222    14,453     10,363     4,090       0      3,191
+2025-11    16,100    14,363     10,356     4,007       0      3,279
+2025-12    16,323    14,460     10,333     4,127       0      3,286
+2026-01    16,498    14,671     10,841     3,830       0      3,312
+2026-02    16,562    14,781     11,210     3,571       0      3,446
+2026-03    16,989    15,118     11,372     3,746       0      3,276
+------------------------------------------------------------------------
+TOTAL     308,963   277,116    179,767    84,899       0
+
+FINAL DATASET (AFTER GLOBAL DEDUPLICATION)
+========================================================================
+
+Total headlines:        179,372  (395 cross-window dupes removed)
+Unique publishers:       13,019
+Date range:         2024-08-01 → 2026-03-31
+Span:                      607 days
+Avg title length:           75 characters
+Missing titles:              0  ✅
+Missing dates:               0  ✅
+Missing publishers:          0  ✅
+Duplicate titles:            0  ✅
+
+CATEGORY DISTRIBUTION
+========================================================================
+
+Category                         Count       %
+------------------------------------------------
+Companies & Products            28,155    15.7%
+General AI                      20,122    11.2%
+Safety & Risk                   15,793     8.8%
+Agency & Autonomy               12,782     7.1%
+Policy & Governance             12,128     6.8%
+Creative Industries             10,814     6.0%
+Business                        10,617     5.9%
+Society & Human Impact           9,840     5.5%
+Finance & Economy                9,078     5.1%
+Health & Science                 8,804     4.9%
+Defense & Security               8,375     4.7%
+Infrastructure & Economy         6,568     3.7%
+Environment                      5,718     3.2%
+Law & Government                 4,878     2.7%
+Democracy & Disinformation       4,328     2.4%
+Education                        4,274     2.4%
+Technology & Software            3,861     2.2%
+Transportation                   3,237     1.8%
+
+TOP 15 PUBLISHERS
+========================================================================
+
+Publisher                                Count
+-----------------------------------------------
+Yahoo Finance                            4,243
+Nature                                   4,069
+Forbes                                   2,315
+PR Newswire                              1,987
+Reuters                                  1,910
+CNBC                                     1,732
+Business Insider                         1,686
+TechCrunch                               1,574
+Fortune                                  1,556
+Bloomberg.com                            1,180
+PYMNTS.com                               1,177
+The Times of India                       1,108
+The Guardian                             1,085
+WSJ                                      1,067
+Microsoft                                1,033
+
+OUTPUT FILES
+========================================================================
+
+data/ai_headlines_raw.csv        179,372 rows   19,066 KB
+data/ai_headlines_full.csv       179,372 rows   83,706 KB
+data/ai_headlines_website.csv      3,000 rows    1,289 KB
+
+COMPARISON TO BASELINES
+========================================================================
+
+                   Headlines   Publishers   Span (days)
+--------------------------------------------------------
+Figshare baseline    20,581       5,706          89
+THIS DATASET        179,372      13,019         607
+
+KEY OBSERVATIONS
+========================================================================
+
+1. VOLUME GROWTH: AI news volume grew 75% over 20 months
+   Aug 2024: 6,500 headlines/month → Mar 2026: 11,372 headlines/month
+
+2. PUBLISHER DIVERSITY: Source base grew from 2,299 to 3,446 unique
+   publishers — AI coverage is broadening beyond tech press
+
+3. ZERO FAILURES: All 192 queries × 20 windows = 3,840 API calls
+   completed with 0 failed queries
+
+4. DEDUP EFFICIENCY: Only 395 cross-window duplicates (0.2%) —
+   monthly windowing strategy successfully isolated temporal coverage
+
+5. NOTABLE SPIKES:
+   - 2025-01 (7,951): DeepSeek release + ChatGPT Gov launch
+   - 2025-10 onwards: Sustained >10k/month — GPT-5 + EU AI Act
+
+QUERY ARCHITECTURE SUMMARY
+========================================================================
+
+Tier 1: Core Terms                   13 queries
+Tier 2: Domain Applications          57 queries
+Tier 3: Risk & Fear                  21 queries
+Tier 4: Agency & Autonomy            17 queries
+Tier 5: Named Entities               25 queries
+Tier 6: Policy & Governance          19 queries
+Tier 7: Human Impact                 19 queries
+Tier 8: Democracy & Disinformation   12 queries
+Tier 9: Infrastructure & Economy     12 queries
+------------------------------------------
+TOTAL                               192 queries
+
+
+LOG
+========================================================================
+STARTING SCRAPE
+  Queries per window:  192
+  Windows to scrape:   20
+  Started:             2026-04-21 11:22:01
+
+[01/20] 2024-08  (2024-08-01 → 2024-08-31)
+  ✓ 2024-08: 12,587 raw  →  10,865 relevant  →  6,500 unique  (4,365 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2024-08.csv
+  Running total: 6,500 headlines | 31 min elapsed
+
+[02/20] 2024-09  (2024-09-01 → 2024-09-30)
+  ✓ 2024-09: 13,364 raw  →  11,480 relevant  →  6,997 unique  (4,483 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2024-09.csv
+  Running total: 13,497 headlines | 62 min elapsed
+
+[03/20] 2024-10  (2024-10-01 → 2024-10-31)
+  ✓ 2024-10: 13,611 raw  →  11,799 relevant  →  7,461 unique  (4,338 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2024-10.csv
+  Running total: 20,958 headlines | 95 min elapsed
+
+[04/20] 2024-11  (2024-11-01 → 2024-11-30)
+  ✓ 2024-11: 12,816 raw  →  10,885 relevant  →  6,743 unique  (4,142 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2024-11.csv
+  Running total: 27,701 headlines | 127 min elapsed
+
+[05/20] 2024-12  (2024-12-01 → 2024-12-31)
+  ✓ 2024-12: 12,732 raw  →  10,951 relevant  →  6,863 unique  (4,088 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2024-12.csv
+  Running total: 34,564 headlines | 158 min elapsed
+
+[06/20] 2025-01  (2025-01-01 → 2025-01-31)
+  ✓ 2025-01: 14,399 raw  →  12,429 relevant  →  7,951 unique  (4,478 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-01.csv
+  Running total: 42,515 headlines | 191 min elapsed
+
+[07/20] 2025-02  (2025-02-01 → 2025-02-28)
+  ✓ 2025-02: 14,649 raw  →  12,951 relevant  →  8,321 unique  (4,630 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-02.csv
+  Running total: 50,836 headlines | 224 min elapsed
+
+[08/20] 2025-03  (2025-03-01 → 2025-03-31)
+  ✓ 2025-03: 14,597 raw  →  12,872 relevant  →  8,386 unique  (4,486 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-03.csv
+  Running total: 59,222 headlines | 257 min elapsed
+
+[09/20] 2025-04  (2025-04-01 → 2025-04-30)
+  ✓ 2025-04: 15,150 raw  →  13,187 relevant  →  8,663 unique  (4,524 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-04.csv
+  Running total: 67,885 headlines | 295 min elapsed
+
+[10/20] 2025-05  (2025-05-01 → 2025-05-31)
+  ✓ 2025-05: 15,562 raw  →  13,693 relevant  →  9,030 unique  (4,663 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-05.csv
+  Running total: 76,915 headlines | 328 min elapsed
+
+[11/20] 2025-06  (2025-06-01 → 2025-06-30)
+  ✓ 2025-06: 15,701 raw  →  13,792 relevant  →  9,177 unique  (4,615 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-06.csv
+  Running total: 86,092 headlines | 362 min elapsed
+
+[12/20] 2025-07  (2025-07-01 → 2025-07-31)
+  ✓ 2025-07: 15,896 raw  →  14,291 relevant  →  9,804 unique  (4,487 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-07.csv
+  Running total: 95,896 headlines | 395 min elapsed
+
+[13/20] 2025-08  (2025-08-01 → 2025-08-31)
+  ✓ 2025-08: 15,906 raw  →  14,132 relevant  →  9,573 unique  (4,559 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-08.csv
+  Running total: 105,469 headlines | 428 min elapsed
+
+[14/20] 2025-09  (2025-09-01 → 2025-09-30)
+  ✓ 2025-09: 15,779 raw  →  13,993 relevant  →  9,823 unique  (4,170 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-09.csv
+  Running total: 115,292 headlines | 461 min elapsed
+
+[15/20] 2025-10  (2025-10-01 → 2025-10-31)
+  ✓ 2025-10: 16,222 raw  →  14,453 relevant  →  10,363 unique  (4,090 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-10.csv
+  Running total: 125,655 headlines | 496 min elapsed
+
+[16/20] 2025-11  (2025-11-01 → 2025-11-30)
+  ✓ 2025-11: 16,100 raw  →  14,363 relevant  →  10,356 unique  (4,007 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-11.csv
+  Running total: 136,011 headlines | 530 min elapsed
+
+[17/20] 2025-12  (2025-12-01 → 2025-12-31)
+  ✓ 2025-12: 16,323 raw  →  14,460 relevant  →  10,333 unique  (4,127 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2025-12.csv
+  Running total: 146,344 headlines | 563 min elapsed
+
+[18/20] 2026-01  (2026-01-01 → 2026-01-31)
+  ✓ 2026-01: 16,498 raw  →  14,671 relevant  →  10,841 unique  (3,830 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2026-01.csv
+  Running total: 157,185 headlines | 597 min elapsed
+
+[19/20] 2026-02  (2026-02-01 → 2026-02-28)
+  ✓ 2026-02: 16,562 raw  →  14,781 relevant  →  11,210 unique  (3,571 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2026-02.csv
+  Running total: 168,395 headlines | 632 min elapsed
+
+[20/20] 2026-03  (2026-03-01 → 2026-03-31)
+  ✓ 2026-03: 16,989 raw  →  15,118 relevant  →  11,372 unique  (3,746 dupes, 0 failed queries)
+    ✓ Checkpoint saved → checkpoints\checkpoint_2026-03.csv
+  Running total: 179,767 headlines | 667 min elapsed
+
+SCRAPE COMPLETE — 667 minutes total
+========================================================================
+
+Window          Headlines   Publishers
+--------------------------------------
+2024-08             6,500        2,299
+2024-09             6,997        2,431
+2024-10             7,461        2,523
+2024-11             6,743        2,447
+2024-12             6,863        2,441
+2025-01             7,951        2,607
+2025-02             8,321        2,833
+2025-03             8,386        2,736
+2025-04             8,663        2,790
+2025-05             9,030        2,876
+2025-06             9,177        2,875
+2025-07             9,804        2,968
+2025-08             9,573        2,892
+2025-09             9,823        3,044
+2025-10            10,363        3,191
+2025-11            10,356        3,279
+2025-12            10,333        3,286
+2026-01            10,841        3,312
+2026-02            11,210        3,446
+2026-03            11,372        3,276
+--------------------------------------
+TOTAL             179,767 (before global dedup)

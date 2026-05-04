@@ -1,0 +1,132 @@
+{
+  "project": "CS 210 Final Project — AI Headlines Bias Observatory",
+  "scraping_session": {
+    "date_run": "2026-04-21",
+    "started": "2026-04-21 11:22:01",
+    "total_runtime_minutes": 667,
+    "total_runtime_hours": 11.12,
+    "tool": "gnews (Google News RSS wrapper, no API key required)",
+    "environment": "VS Code, Windows, Python venv"
+  },
+  "query_architecture": {
+    "total_queries": 192,
+    "tiers": {
+      "Tier 1 - Core Terms": 13,
+      "Tier 2 - Domain Applications": 57,
+      "Tier 3 - Risk & Fear": 21,
+      "Tier 4 - Agency & Autonomy": 17,
+      "Tier 5 - Named Entities": 25,
+      "Tier 6 - Policy & Governance": 19,
+      "Tier 7 - Human Impact": 19,
+      "Tier 8 - Democracy & Disinformation": 12,
+      "Tier 9 - Infrastructure & Economy": 12
+    }
+  },
+  "time_windows": {
+    "total": 20,
+    "start": "2024-08-01",
+    "end": "2026-03-31",
+    "span_days": 607,
+    "granularity": "monthly"
+  },
+  "per_window_results": [
+    {"window": "2024-08", "raw": 12587, "relevant": 10865, "unique": 6500, "dupes_removed": 4365, "failed_queries": 0, "publishers": 2299},
+    {"window": "2024-09", "raw": 13364, "relevant": 11480, "unique": 6997, "dupes_removed": 4483, "failed_queries": 0, "publishers": 2431},
+    {"window": "2024-10", "raw": 13611, "relevant": 11799, "unique": 7461, "dupes_removed": 4338, "failed_queries": 0, "publishers": 2523},
+    {"window": "2024-11", "raw": 12816, "relevant": 10885, "unique": 6743, "dupes_removed": 4142, "failed_queries": 0, "publishers": 2447},
+    {"window": "2024-12", "raw": 12732, "relevant": 10951, "unique": 6863, "dupes_removed": 4088, "failed_queries": 0, "publishers": 2441},
+    {"window": "2025-01", "raw": 14399, "relevant": 12429, "unique": 7951, "dupes_removed": 4478, "failed_queries": 0, "publishers": 2607},
+    {"window": "2025-02", "raw": 14649, "relevant": 12951, "unique": 8321, "dupes_removed": 4630, "failed_queries": 0, "publishers": 2833},
+    {"window": "2025-03", "raw": 14597, "relevant": 12872, "unique": 8386, "dupes_removed": 4486, "failed_queries": 0, "publishers": 2736},
+    {"window": "2025-04", "raw": 15150, "relevant": 13187, "unique": 8663, "dupes_removed": 4524, "failed_queries": 0, "publishers": 2790},
+    {"window": "2025-05", "raw": 15562, "relevant": 13693, "unique": 9030, "dupes_removed": 4663, "failed_queries": 0, "publishers": 2876},
+    {"window": "2025-06", "raw": 15701, "relevant": 13792, "unique": 9177, "dupes_removed": 4615, "failed_queries": 0, "publishers": 2875},
+    {"window": "2025-07", "raw": 15896, "relevant": 14291, "unique": 9804, "dupes_removed": 4487, "failed_queries": 0, "publishers": 2968},
+    {"window": "2025-08", "raw": 15906, "relevant": 14132, "unique": 9573, "dupes_removed": 4559, "failed_queries": 0, "publishers": 2892},
+    {"window": "2025-09", "raw": 15779, "relevant": 13993, "unique": 9823, "dupes_removed": 4170, "failed_queries": 0, "publishers": 3044},
+    {"window": "2025-10", "raw": 16222, "relevant": 14453, "unique": 10363, "dupes_removed": 4090, "failed_queries": 0, "publishers": 3191},
+    {"window": "2025-11", "raw": 16100, "relevant": 14363, "unique": 10356, "dupes_removed": 4007, "failed_queries": 0, "publishers": 3279},
+    {"window": "2025-12", "raw": 16323, "relevant": 14460, "unique": 10333, "dupes_removed": 4127, "failed_queries": 0, "publishers": 3286},
+    {"window": "2026-01", "raw": 16498, "relevant": 14671, "unique": 10841, "dupes_removed": 3830, "failed_queries": 0, "publishers": 3312},
+    {"window": "2026-02", "raw": 16562, "relevant": 14781, "unique": 11210, "dupes_removed": 3571, "failed_queries": 0, "publishers": 3446},
+    {"window": "2026-03", "raw": 16989, "relevant": 15118, "unique": 11372, "dupes_removed": 3746, "failed_queries": 0, "publishers": 3276}
+  ],
+  "final_dataset": {
+    "before_global_dedup": 179767,
+    "after_global_dedup": 179372,
+    "cross_window_dupes_removed": 395,
+    "unique_publishers": 13019,
+    "date_range_start": "2024-08-01",
+    "date_range_end": "2026-03-31",
+    "span_days": 607,
+    "avg_title_length_chars": 75,
+    "integrity_checks": {
+      "missing_titles": 0,
+      "missing_dates": 0,
+      "missing_publishers": 0,
+      "duplicate_titles": 0
+    }
+  },
+  "category_distribution": {
+    "Companies & Products": {"count": 28155, "pct": 15.7},
+    "General AI": {"count": 20122, "pct": 11.2},
+    "Safety & Risk": {"count": 15793, "pct": 8.8},
+    "Agency & Autonomy": {"count": 12782, "pct": 7.1},
+    "Policy & Governance": {"count": 12128, "pct": 6.8},
+    "Creative Industries": {"count": 10814, "pct": 6.0},
+    "Business": {"count": 10617, "pct": 5.9},
+    "Society & Human Impact": {"count": 9840, "pct": 5.5},
+    "Finance & Economy": {"count": 9078, "pct": 5.1},
+    "Health & Science": {"count": 8804, "pct": 4.9},
+    "Defense & Security": {"count": 8375, "pct": 4.7},
+    "Infrastructure & Economy": {"count": 6568, "pct": 3.7},
+    "Environment": {"count": 5718, "pct": 3.2},
+    "Law & Government": {"count": 4878, "pct": 2.7},
+    "Democracy & Disinformation": {"count": 4328, "pct": 2.4},
+    "Education": {"count": 4274, "pct": 2.4},
+    "Technology & Software": {"count": 3861, "pct": 2.2},
+    "Transportation": {"count": 3237, "pct": 1.8}
+  },
+  "top_15_publishers": [
+    {"publisher": "Yahoo Finance", "count": 4243},
+    {"publisher": "Nature", "count": 4069},
+    {"publisher": "Forbes", "count": 2315},
+    {"publisher": "PR Newswire", "count": 1987},
+    {"publisher": "Reuters", "count": 1910},
+    {"publisher": "CNBC", "count": 1732},
+    {"publisher": "Business Insider", "count": 1686},
+    {"publisher": "TechCrunch", "count": 1574},
+    {"publisher": "Fortune", "count": 1556},
+    {"publisher": "Bloomberg.com", "count": 1180},
+    {"publisher": "PYMNTS.com", "count": 1177},
+    {"publisher": "The Times of India", "count": 1108},
+    {"publisher": "The Guardian", "count": 1085},
+    {"publisher": "WSJ", "count": 1067},
+    {"publisher": "Microsoft", "count": 1033}
+  ],
+  "output_files": {
+    "ai_headlines_raw.csv": {"rows": 179372, "size_kb": 19066, "columns": ["headline_id", "title", "publisher", "date"], "note": "Figshare-compatible schema for cross-validation"},
+    "ai_headlines_full.csv": {"rows": 179372, "size_kb": 83706, "columns": ["headline_id", "title", "publisher", "date", "year", "month", "query_source", "category", "window", "url"], "note": "Full metadata for audit trail"},
+    "ai_headlines_website.csv": {"rows": 3000, "size_kb": 1289, "columns": ["headline_id", "title", "publisher", "date", "category", "url", "year_month"], "note": "Stratified sample for interactive website"}
+  },
+  "comparison_to_baselines": {
+    "figshare_baseline": {"headlines": 20581, "publishers": 5706, "span_days": 89},
+    "raise_dataset": {"headlines": 10500, "publishers": 3125, "span_days": 89},
+    "this_dataset": {"headlines": 179372, "publishers": 13019, "span_days": 607},
+    "vs_figshare": {"headlines_multiplier": "8.7x", "publishers_multiplier": "2.3x", "span_multiplier": "6.8x"},
+    "vs_raise": {"headlines_multiplier": "17.1x", "publishers_multiplier": "4.2x", "span_multiplier": "6.8x"}
+  },
+  "key_observations": {
+    "volume_growth_trend": "AI news volume nearly doubled over 20 months: 6,500 headlines in Aug 2024 vs 11,372 in Mar 2026 (+75%)",
+    "publisher_growth_trend": "Source diversity grew from 2,299 publishers (Aug 2024) to 3,446 (Feb 2026) — AI coverage is broadening beyond tech press",
+    "deduplication_efficiency": "Only 395 cross-window duplicates (0.2%) — monthly windowing strategy successfully captured temporally distinct coverage",
+    "zero_failed_queries": "All 192 queries × 20 windows = 3,840 API calls completed successfully with 0 failures",
+    "notable_spike_windows": ["2025-01 spike likely DeepSeek + ChatGPT Gov", "2025-10 through 2026-03 sustained growth likely GPT-5 + EU AI Act enforcement"]
+  },
+  "next_steps": [
+    "01_database.ipynb — load into SQLite, CREATE TABLE schema, SQL analysis queries",
+    "02_nlp_pipeline.ipynb — VADER sentiment, sentence-transformers bias scoring, PSI, AAI, Invisible Human",
+    "03_modeling.ipynb — linear regression, decision tree, k-means clustering, forecasting",
+    "website/index.html — interactive GitHub Pages site with live headline scorer"
+  ]
+}

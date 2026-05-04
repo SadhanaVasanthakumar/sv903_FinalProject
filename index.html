@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What the Headlines Say · Sadhana Vasanthakumar</title>
+<meta name="description" content="A study of cognitive bias and agency framing in 179,372 AI news headlines, by Sadhana Vasanthakumar, CS 210 Data Management for Data Science, Rutgers University Spring 2026.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js and vis-network -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+
+<style>
+:root {
+  --paper: #f5efe4;
+  --paper-warm: #f9f3e7;
+  --paper-deep: #ebe2d2;
+  --ink: #1c1815;
+  --ink-soft: #3a3530;
+  --ink-mute: #6b645b;
+  --rule: #d8cfc0;
+  --rule-soft: #e6dfd1;
+  --accent: #b8501f;
+  --accent-soft: #d68a5a;
+  --accent-deep: #8e3e15;
+  --neg: #8e2c1c;
+  --pos: #4d6b1f;
+  --neu: #3d5468;
+  --warn: #b89020;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(184,80,31,0.025) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(28,24,21,0.02) 0%, transparent 50%);
+  color: var(--ink);
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+main { position: relative; z-index: 2; }
+
+/* TYPOGRAPHY */
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 600;
+  margin-bottom: 0.6em;
+}
+
+h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.6em;
+  margin-top: 1.5rem;
+}
+
+p { margin-bottom: 1.1em; }
+
+.section-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1em;
+  display: block;
+}
+
+/* TOP NAV */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(245, 239, 228, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+}
+
+.topnav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.85rem 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.topnav-brand {
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+.topnav-brand .brand-mark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  margin-right: 0.6rem;
+  vertical-align: middle;
+}
+
+.topnav-scroll {
+  display: flex;
+  gap: 1.8rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.topnav-scroll::-webkit-scrollbar { display: none; }
+
+.topnav-scroll a {
+  color: var(--ink-mute);
+  text-decoration: none;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0;
+  position: relative;
+  transition: color 0.15s;
+}
+
+.topnav-scroll a:hover { color: var(--accent); }
+.topnav-scroll a.active { color: var(--ink); font-weight: 500; }
+.topnav-scroll a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.85rem;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* LAYOUT — WIDER, LESS SQUISHED */
+.wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.wrap-wide {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+section {
+  padding: 5rem 0;
+  position: relative;
+}
+
+section + section {
+  border-top: 1px solid var(--rule);
+}
+
+/* HERO */
+.hero {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 0 3rem;
+}
+
+.kicker {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2rem;
+}
+
+.hero h1 { margin-bottom: 1.5rem; max-width: 16ch; }
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.deck {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.45;
+  color: var(--ink-soft);
+  max-width: 40ch;
+  margin-bottom: 2.5rem;
+  font-weight: 350;
+}
+
+.byline {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.tape {
+  margin: 2rem 0 1.5rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  line-height: 1.85;
+}
+
+.tape .h-num {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  color: var(--accent);
+  font-size: 0.78rem;
+  margin-right: 0.6rem;
+}
+
+/* DROP CAP */
+.drop-cap::first-letter {
+  font-family: "Fraunces", serif;
+  font-size: 4.4rem;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  margin: 0.1rem 0.7rem 0 0;
+  color: var(--accent);
+}
+
+/* PULL QUOTES */
+.pullquote {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 2.5rem 0;
+  padding: 1.2rem 0 1.2rem 2rem;
+  border-left: 4px solid var(--accent);
+}
+
+/* STATS GRID */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 2.5rem 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 1.5rem 0;
+}
+
+.stat {
+  flex: 1;
+  min-width: 140px;
+}
+
+.stat-num {
+  font-family: "Fraunces", serif;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.stat-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 0.5rem;
+}
+
+/* CHARTS — PROPERLY SIZED */
+.chart-block { margin: 3rem 0; }
+
+.chart-block .chart-title {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.chart-block .chart-sub {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  margin-bottom: 1rem;
+}
+
+.chart-shell {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  padding: 1.5rem;
+  border-radius: 4px;
+}
+
+.chart-shell canvas { 
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+
+/* NETWORK GRAPH STYLES */
+.network-container {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  height: 550px;
+  position: relative;
+}
+
+.network-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+}
+
+.network-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.neg { background: #8e2c1c; }
+.legend-dot.pos { background: #4d6b1f; }
+
+.network-tooltip {
+  position: absolute;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: "JetBrains Mono", monospace;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 250px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.chart-btn {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 30px;
+}
+
+.chart-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chart-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* PIPELINE */
+.pipeline {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.pipeline-header {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 1.5rem;
+}
+
+.pipeline-flow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pipeline-step {
+  flex: 1;
+  min-width: 200px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 1.2rem;
+  border-radius: 8px;
+  border-top: 3px solid var(--accent);
+}
+
+.pipeline-step .step-num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.pipeline-step .step-name {
+  font-family: "Fraunces", serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.pipeline-step .step-detail {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+  line-height: 1.5;
+}
+
+/* FINDINGS */
+.finding-num {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: clamp(3.5rem, 6vw, 5.5rem);
+  font-weight: 300;
+  color: var(--accent-soft);
+  line-height: 1;
+  margin-bottom: 0.2rem;
+  display: inline-block;
+}
+
+.finding-title {
+  font-family: "Fraunces", serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.honesty-note {
+  background: rgba(184, 80, 31, 0.06);
+  border-left: 3px solid var(--accent);
+  padding: 1.2rem 1.6rem;
+  margin: 2rem 0;
+  font-size: 0.96rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.honesty-note .note-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* HYPOTHESIS GRID */
+.hypothesis-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 2rem 0;
+}
+
+.hypothesis-row {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  padding: 1rem 1.2rem;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-left-width: 4px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+}
+
+.hypothesis-row.passed { border-left-color: var(--pos); }
+.hypothesis-row.failed { border-left-color: var(--neg); }
+
+.h-tag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  border-radius: 20px;
+}
+
+.h-tag.passed { background: var(--pos); color: var(--paper); }
+.h-tag.failed { background: var(--neg); color: var(--paper); }
+
+.h-detail {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-mute);
+  margin-top: 0.3rem;
+}
+
+/* SCORER */
+.scorer {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 5rem 0;
+}
+
+.scorer .section-label { color: var(--accent-soft); }
+.scorer h2 { color: var(--paper); margin-bottom: 0.6rem; }
+
+.scorer-input {
+  width: 100%;
+  padding: 1.2rem 1.4rem;
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: 1.1rem;
+  background: rgba(245, 239, 228, 0.06);
+  border: 1px solid rgba(245, 239, 228, 0.2);
+  color: var(--paper);
+  margin: 1.5rem 0 1rem 0;
+  outline: none;
+  border-radius: 8px;
+}
+
+.scorer-input:focus {
+  border-color: var(--accent-soft);
+  background: rgba(245, 239, 228, 0.1);
+}
+
+.example-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.example-btn {
+  background: rgba(245, 239, 228, 0.06);
+  border: 1px solid rgba(245, 239, 228, 0.18);
+  color: rgba(245, 239, 228, 0.8);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 30px;
+  font-family: "Source Serif 4", serif;
+}
+
+.example-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+.scorer-result {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(245, 239, 228, 0.15);
+  background: rgba(245, 239, 228, 0.04);
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.result-cell {
+  border-right: 1px solid rgba(245, 239, 228, 0.15);
+  padding-right: 2rem;
+}
+
+.result-cell:last-child { border-right: none; padding-right: 0; }
+
+.result-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin-bottom: 0.5rem;
+}
+
+.result-value {
+  font-family: "Fraunces", serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.result-explain {
+  font-size: 0.85rem;
+  color: rgba(245, 239, 228, 0.7);
+}
+
+.bias-bars { margin-top: 1.5rem; }
+.bias-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; font-family: "JetBrains Mono", monospace; font-size: 0.75rem; }
+.bias-name { width: 150px; color: rgba(245, 239, 228, 0.7); }
+.bias-bar-track { flex: 1; height: 6px; background: rgba(245, 239, 228, 0.1); border-radius: 3px; }
+.bias-bar-fill { height: 100%; background: var(--accent-soft); border-radius: 3px; }
+
+/* CLUSTERS */
+.cluster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+.cluster-card {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--accent);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+
+.cluster-card:hover {
+  background: var(--paper-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(28,24,21,0.1);
+}
+
+.cluster-card.c0 { border-top-color: #b89020; }
+.cluster-card.c1 { border-top-color: #4d6b1f; }
+.cluster-card.c2 { border-top-color: #8e2c1c; }
+.cluster-card.c3 { border-top-color: #3d5468; }
+
+.cluster-card.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.cluster-name {
+  font-family: "Fraunces", serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.cluster-pct {
+  font-family: "Fraunces", serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cluster-detail {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--ink-mute);
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.cluster-detail-view {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  padding: 1.5rem;
+  margin-top: 1rem;
+  display: none;
+  border-radius: 8px;
+}
+
+.cluster-detail-view.show { display: block; }
+
+/* FIGURE GALLERY */
+.figure-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+
+.figure-item {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.figure-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 0.7rem;
+  border-radius: 4px;
+}
+
+.figure-item .fig-caption {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--ink-mute);
+}
+
+/* FOOTER */
+footer {
+  background: var(--ink);
+  color: rgba(245, 239, 228, 0.7);
+  padding: 4rem 0 3rem;
+  font-size: 0.92rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(245, 239, 228, 0.15);
+  padding-top: 1.5rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  body { font-size: 17px; }
+  .wrap { max-width: 100%; padding: 0 24px; }
+  .wrap-wide { padding: 0 24px; }
+  section { padding: 3rem 0; }
+  .result-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .result-cell { border-right: none; border-bottom: 1px solid rgba(245,239,228,0.15); padding-right: 0; padding-bottom: 1rem; }
+  .result-cell:last-child { border-bottom: none; }
+  .topnav-scroll { gap: 1rem; }
+  .stats { flex-direction: column; gap: 1rem; }
+  .pipeline-flow { flex-direction: column; }
+  .pipeline-step { min-width: auto; }
+  .hypothesis-row { flex-direction: column; }
+  .network-container { height: 450px; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero h1, .hero .deck, .hero .byline {
+  animation: fadeUp 0.7s ease-out backwards;
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="topnav-brand"><span class="brand-mark"></span>What the Headlines Say</div>
+    <div class="topnav-scroll">
+      <a href="#intro">Intro</a>
+      <a href="#data">Data</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#finding-1">Power Shift</a>
+      <a href="#finding-2">Anxiety</a>
+      <a href="#finding-3">Two Camps</a>
+      <a href="#network-viz">Network</a>
+      <a href="#finding-4">Invisible Human</a>
+      <a href="#scorer">Try It</a>
+      <a href="#limitations">Limits</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">CS 210 · Data Management for Data Science · Spring 2026</div>
+    <h1>What the <em>Headlines</em> Say</h1>
+    <p class="deck">Measuring cognitive bias and agency framing in 179,372 AI news headlines.</p>
+    <div class="tape">
+      <span class="h-num">01</span><i>"AI Designs Computer Chips We Can't Understand"</i><br>
+      <span class="h-num">02</span><i>"AI threatens to eliminate millions of jobs"</i><br>
+      <span class="h-num">03</span><i>"How Generative AI is destroying society"</i><br>
+      <span class="h-num">04</span><i>"The AI model that wants to understand your mind"</i>
+    </div>
+    <p class="byline">
+      <strong>Sadhana Vasanthakumar</strong> · CS 210 Final Project<br>
+      Rutgers University · Spring 2026<br>
+      Data window: Aug 1, 2024 to Mar 31, 2026 · 13,019 publishers · 20 monthly windows
+    </p>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="wrap">
+    <span class="section-label">01 / Introduction</span>
+    <h2>What we set out to learn</h2>
+    <p class="drop-cap">Most people learn about AI from headlines, not research papers. A headline that says "AI Takes Over Another Industry" is doing something different from "Companies Adopt AI Automation Tools," even when the underlying story is identical. The first frames AI as an actor with its own will. The second describes a choice that people made. This project measures those framings at scale across 179,372 headlines.</p>
+    <div class="pullquote">Is news coverage increasingly treating AI itself as the actor, while humans recede into the background?</div>
+    <p>That question became the Power Shift Index. The second question — how concentrated is anxiety in AI coverage? — became the AI Anxiety Index. The third question — when coverage is about humans, do headlines engage with human experience? — became the Invisible Human Framework. Three hypotheses were supported. Two were not. We walk through what we found and what we got wrong.</p>
+  </div>
+</section>
+
+<!-- DATA -->
+<section id="data">
+  <div class="wrap">
+    <span class="section-label">02 / The Data</span>
+    <h2>How the corpus was made</h2>
+    <p>We scraped Google News using a nine-tier query architecture across twenty monthly windows, from "AI" to "AI grief" and "AI dignity".</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">179,372</div><div class="stat-label">Headlines</div></div>
+      <div class="stat"><div class="stat-num">13,019</div><div class="stat-label">Publishers (raw)</div></div>
+      <div class="stat"><div class="stat-num">593</div><div class="stat-label">Pubs ≥50 headlines</div></div>
+      <div class="stat"><div class="stat-num">20</div><div class="stat-label">Monthly windows</div></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-title">Monthly headline volume</div>
+      <div class="chart-sub">Coverage roughly doubled from August 2024 to March 2026</div>
+      <div class="chart-shell"><canvas id="chart-volume" height="300"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="wrap-wide">
+    <span class="section-label">03 / The Pipeline</span>
+    <h2>From headlines to findings, in four notebooks</h2>
+    <div class="pipeline">
+      <div class="pipeline-flow">
+        <div class="pipeline-step"><div class="step-num">NB00</div><div class="step-name">Scraping</div><div class="step-detail">192 queries × 20 months. 11 hours. Output: 179,372 headlines.</div></div>
+        <div class="pipeline-step"><div class="step-num">NB01</div><div class="step-name">Database</div><div class="step-detail">SQLite schema, 4 tables, 7 analytical SQL queries.</div></div>
+        <div class="pipeline-step"><div class="step-num">NB02</div><div class="step-name">NLP</div><div class="step-detail">VADER, sentence-transformers, PSI, AAI, 8 bias dimensions.</div></div>
+        <div class="pipeline-step"><div class="step-num">NB03</div><div class="step-name">Modeling</div><div class="step-detail">Ridge regression, decision tree, k-means with stability validation.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINDING 1: PSI -->
+<section id="finding-1">
+  <div class="wrap">
+    <span class="finding-num">01</span>
+    <span class="section-label">Finding One</span>
+    <h2 class="finding-title">AI is becoming the subject of its own coverage</h2>
+    <p>PSI rose at 34.6 points per month (p = 0.0022, R² = 0.41).</p>
+    <div class="chart-block"><div class="chart-shell"><canvas id="chart-psi" height="320"></canvas></div></div>
+    <div class="pullquote">News coverage is increasingly framing AI systems as actors, with humans becoming implicit operators.</div>
+    <div class="honesty-note"><span class="note-label">What we got wrong</span><p>Cohen's kappa = 0.37 (fair). The classifier is too strict, but the trend is real.</p></div>
+  </div>
+</section>
+
+<!-- FINDING 2: AAI -->
+<section id="finding-2">
+  <div class="wrap">
+    <span class="finding-num">02</span>
+    <span class="section-label">Finding Two</span>
+    <h2 class="finding-title">Anxiety concentrates in Risk coverage but spreads everywhere</h2>
+    <p>Safety & Risk headlines have AAI 0.093 vs Companies & Products at 0.018. Cohen's d = 0.749.</p>
+    <div class="chart-block"><div class="chart-shell"><canvas id="chart-category" height="400"></canvas></div></div>
+  </div>
+</section>
+
+<!-- FINDING 3 + INTERACTIVE NETWORK (the core addition) -->
+<section id="finding-3">
+  <div class="wrap">
+    <span class="finding-num">03</span>
+    <span class="section-label">Finding Three</span>
+    <h2 class="finding-title">The two camps: AI discourse has bifurcated</h2>
+    <p>Negative biases (fear, moral panic, control loss) cluster together. Positive biases (optimism, techno-utopianism) form a separate cluster. There is almost no middle ground.</p>
+  </div>
+  <div class="wrap-wide">
+    <div class="chart-block">
+      <div class="chart-title">Interactive Bias Co-occurrence Network</div>
+      <div class="chart-sub">Drag nodes to explore · Edge thickness = correlation strength · Red nodes = negative-framing biases · Green nodes = positive-framing biases</div>
+      <div class="network-container" id="bias-network"></div>
+      <div class="network-legend">
+        <span><div class="legend-dot neg"></div> Negative camp (fear, moral panic, control loss)</span>
+        <span><div class="legend-dot pos"></div> Positive camp (optimism, techno-utopianism)</span>
+        <span><span style="font-weight:600;">Node size</span> = Mean AAI (anxiety score)</span>
+        <span><span style="font-weight:600;">Edge thickness</span> = Pearson r correlation</span>
+      </div>
+      <p style="font-size:0.85rem; margin-top:1rem; color:var(--ink-mute); text-align:center;">← Drag nodes · Scroll to zoom · Click any node to see example headlines →</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <p>The two camps are largely separable. A reader scrolling AI headlines is being asked to choose a side: the language of breakthrough and unlimited potential, or the language of crisis and existential risk. The vocabulary that would let you sit with both at once — trade-offs, context-dependence — is the vocabulary the news ecosystem does not reach for.</p>
+  </div>
+</section>
+
+<!-- FINDING 4: INVISIBLE HUMAN -->
+<section id="finding-4">
+  <div class="wrap">
+    <span class="finding-num">04</span>
+    <span class="section-label">Finding Four</span>
+    <h2 class="finding-title">92.4% of AI headlines contain zero human-experience vocabulary</h2>
+    <p>No grief, no love, no dignity, no community. Even when headlines mention humans, only 7.9% engage these domains.</p>
+    <div class="chart-block"><div class="chart-shell"><canvas id="chart-ih" height="340"></canvas></div></div>
+    <div class="pullquote">Of the most anxious 10% of headlines, 90.9% contain zero human-experience vocabulary.</div>
+    <div class="honesty-note"><span class="note-label">H4 failed (sanity check)</span><p>Headlines mentioning humans did not engage human-experience domains more than others (d = 0.016, p = 0.066). The unconditional claim stands alone.</p></div>
+  </div>
+</section>
+
+<!-- HYPOTHESES (condensed) -->
+<section id="hypotheses">
+  <div class="wrap">
+    <span class="section-label">05 / Pre-Registered Hypothesis Tests</span>
+    <h2>Five questions, three answers</h2>
+    <div class="hypothesis-grid">
+      <div class="hypothesis-row passed"><span class="h-tag passed">Supported</span><div><strong>H1.</strong> PSI upward trend <div class="h-detail">slope = +34.64/mo · p = 0.0022</div></div></div>
+      <div class="hypothesis-row passed"><span class="h-tag passed">Supported</span><div><strong>H2.</strong> Risk > Products on AAI <div class="h-detail">Cohen's d = +0.749</div></div></div>
+      <div class="hypothesis-row passed"><span class="h-tag passed">Supported</span><div><strong>H3.</strong> Entity-named < Generic on AAI <div class="h-detail">Cohen's d = -0.221 · p &lt; 10⁻⁷⁸</div></div></div>
+      <div class="hypothesis-row failed"><span class="h-tag failed">Failed</span><div><strong>H4.</strong> Human-mentioning > Other on IH <div class="h-detail">d = +0.016 · p = 0.066</div></div></div>
+      <div class="hypothesis-row failed"><span class="h-tag failed">Underpowered</span><div><strong>H5.</strong> Release months > Baseline on PSI <div class="h-detail">d = +0.466 · p = 0.20 · n = 2</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORER -->
+<section class="scorer" id="scorer">
+  <div class="wrap">
+    <span class="section-label">06 / Try It Yourself</span>
+    <h2>Score any AI headline</h2>
+    <input type="text" class="scorer-input" id="scorer-input" placeholder="e.g. AI poses an existential threat to humanity" autocomplete="off">
+    <div class="example-row">
+      <button class="example-btn" data-h="ChatGPT outperforms human doctors at diagnosing cancer">try a real one</button>
+      <button class="example-btn" data-h="AI threatens to eliminate millions of white-collar jobs">try another</button>
+      <button class="example-btn" data-h="The AI model that wants to understand your mind">edge case</button>
+    </div>
+    <div class="scorer-result" id="scorer-result" style="display: none;">
+      <div class="result-grid">
+        <div class="result-cell"><div class="result-label">Power Shift</div><div class="result-value" id="r-psi">—</div><div class="result-explain" id="r-psi-exp">—</div></div>
+        <div class="result-cell"><div class="result-label">AI Anxiety</div><div class="result-value" id="r-aai">—</div><div class="result-explain" id="r-aai-exp">—</div></div>
+        <div class="result-cell"><div class="result-label">Dominant Bias</div><div class="result-value" id="r-bias">—</div><div class="result-explain" id="r-bias-exp">—</div></div>
+      </div>
+      <div class="bias-bars" id="bias-bars"></div>
+      <p style="font-size:0.75rem; opacity:0.6;">Keyword matching only. Full pipeline adds sentence-transformer embeddings.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIMITATIONS -->
+<section id="limitations">
+  <div class="wrap">
+    <span class="section-label">07 / What We Got Wrong</span>
+    <h2>Limitations, in plain language</h2>
+    <h3>PSI classifier is too strict</h3><p>Cohen's kappa = 0.37. The classifier misses passive constructions. The trend is robust, but absolute numbers are conservative.</p>
+    <h3>Invisible Human conflates topic with treatment</h3><p>A headline about funding doesn't mention grief because it's not about grief. The unconditional claim (92.4%) is the honest version.</p>
+    <h3>Political-lean coverage is thin</h3><p>Only 118 of 13,019 publishers matched AllSides (0.91%). No claims about political asymmetry.</p>
+    <h3>Forecasting is extrapolation</h3><p>20 observations is enough for a trend test, not for ARIMA. The 95% CI on PSI spans 1,200 points.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap-wide">
+    <div class="footer-grid">
+      <div><h3>Project</h3><p>Final project for CS 210, Rutgers University, Spring 2026.</p></div>
+      <div><h3>Code &amp; Data</h3><p>Four Jupyter notebooks, SQLite database, figures on GitHub.</p></div>
+      <div><h3>Author</h3><p>Sadhana Vasanthakumar · Computer Science</p></div>
+    </div>
+    <div class="footer-bottom">Vanilla HTML, CSS, Chart.js, vis-network. Last updated May 2026.</div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+// DATA
+const DATA = {"monthly_trend":[{"window":"2024-08","n_headlines":6500,"avg_aai":0.0339,"psi_index":542.9},{"window":"2024-09","n_headlines":6990,"avg_aai":0.0333,"psi_index":625.0},{"window":"2024-10","n_headlines":7453,"avg_aai":0.0342,"psi_index":558.3},{"window":"2024-11","n_headlines":6736,"avg_aai":0.0346,"psi_index":550.0},{"window":"2024-12","n_headlines":6849,"avg_aai":0.0317,"psi_index":426.7},{"window":"2025-01","n_headlines":7942,"avg_aai":0.0346,"psi_index":936.4},{"window":"2025-02","n_headlines":8303,"avg_aai":0.0333,"psi_index":625.0},{"window":"2025-03","n_headlines":8380,"avg_aai":0.0335,"psi_index":877.8},{"window":"2025-04","n_headlines":8643,"avg_aai":0.0346,"psi_index":566.7},{"window":"2025-05","n_headlines":9004,"avg_aai":0.0356,"psi_index":1070.0},{"window":"2025-06","n_headlines":9165,"avg_aai":0.0357,"psi_index":1122.2},{"window":"2025-07","n_headlines":9777,"avg_aai":0.0379,"psi_index":711.8},{"window":"2025-08","n_headlines":9548,"avg_aai":0.0388,"psi_index":1533.3},{"window":"2025-09","n_headlines":9800,"avg_aai":0.039,"psi_index":892.3},{"window":"2025-10","n_headlines":10339,"avg_aai":0.0367,"psi_index":776.9},{"window":"2025-11","n_headlines":10330,"avg_aai":0.0381,"psi_index":1183.3},{"window":"2025-12","n_headlines":10303,"avg_aai":0.0384,"psi_index":753.8},{"window":"2026-01","n_headlines":10800,"avg_aai":0.0411,"psi_index":1550.0},{"window":"2026-02","n_headlines":11175,"avg_aai":0.0442,"psi_index":968.8},{"window":"2026-03","n_headlines":11335,"avg_aai":0.0407,"psi_index":1078.6}]};
+const CAT_AAI = {"Health & Science":0.1177,"Safety & Risk":0.0926,"Society & Human Impact":0.0417,"Environment":0.037,"General AI":0.0335,"Companies & Products":0.0178};
+const IH_RATES = {"Childhood / Play":4.16,"Love / Relationships":0.93,"Spirituality / Meaning":0.61,"Bodily Experience":0.61,"Dignity / Purpose":0.59,"Grief / Loss":0.54,"Community / Belonging":0.31};
+const BIAS_CORR = [[1,0.38,0.55,0.84,0.62,0.46,0.69,0.81],[0.38,1,0.51,0.42,0.49,0.86,0.39,0.41],[0.55,0.51,1,0.61,0.71,0.59,0.51,0.62],[0.84,0.42,0.61,1,0.69,0.51,0.74,0.88],[0.62,0.49,0.71,0.69,1,0.55,0.6,0.71],[0.46,0.86,0.59,0.51,0.55,1,0.45,0.49],[0.69,0.39,0.51,0.74,0.6,0.45,1,0.79],[0.81,0.41,0.62,0.88,0.71,0.49,0.79,1]];
+const BIAS_LABELS = ["Fear","Optimism","Anthropomorphism","Moral Panic","Agency Attribution","Techno-Utopianism","Economic Threat","Control Loss"];
+const BIAS_AAI = [0.333,0.392,0.368,0.412,0.346,0.465,0.326,0.399]; // mean AAI per bias
+
+// Charts
+new Chart(document.getElementById('chart-volume'),{type:'bar',data:{labels:DATA.monthly_trend.map(d=>d.window),datasets:[{data:DATA.monthly_trend.map(d=>d.n_headlines),backgroundColor:'#b8501f'}]},options:{responsive:true,maintainAspectRatio:true,plugins:{tooltip:{callbacks:{label:c=>`${c.parsed.y.toLocaleString()} headlines`}}}}});
+new Chart(document.getElementById('chart-psi'),{type:'line',data:{labels:DATA.monthly_trend.map(d=>d.window),datasets:[{label:'PSI',data:DATA.monthly_trend.map(d=>d.psi_index),borderColor:'#b8501f',borderWidth:2,pointRadius:4,fill:false}]},options:{responsive:true,maintainAspectRatio:true}});
+const catSorted=Object.entries(CAT_AAI).sort((a,b)=>b[1]-a[1]);
+new Chart(document.getElementById('chart-category'),{type:'bar',data:{labels:catSorted.map(([k])=>k),datasets:[{data:catSorted.map(([,v])=>v),backgroundColor:'#b8501f'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{tooltip:{callbacks:{label:c=>`Mean AAI: ${c.parsed.x.toFixed(4)}`}}}}});
+const ihSorted=Object.entries(IH_RATES).sort((a,b)=>b[1]-a[1]);
+new Chart(document.getElementById('chart-ih'),{type:'bar',data:{labels:ihSorted.map(([k])=>k),datasets:[{data:ihSorted.map(([,v])=>v),backgroundColor:'#5c3a1f'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{tooltip:{callbacks:{label:c=>`${c.parsed.x.toFixed(2)}%`}}}}});
+
+// INTERACTIVE NETWORK GRAPH
+const nodes = BIAS_LABELS.map((label, idx) => ({
+  id: idx,
+  label: label,
+  title: `${label}\nMean AAI: ${BIAS_AAI[idx].toFixed(3)}\nCo-occurs most strongly with ${BIAS_LABELS[BIAS_CORR[idx].reduce((max,i)=>BIAS_CORR[idx][i]>BIAS_CORR[idx][max]?i:max,0)]}`,
+  value: BIAS_AAI[idx] * 60 + 10, // node size based on AAI
+  color: idx === 0 || idx === 3 || idx === 6 || idx === 7 ? '#8e2c1c' : idx === 1 || idx === 5 ? '#4d6b1f' : '#b89020',
+  group: (idx === 0 || idx === 3 || idx === 6 || idx === 7) ? 'negative' : 'positive'
+}));
+
+const edges = [];
+for (let i = 0; i < BIAS_LABELS.length; i++) {
+  for (let j = i + 1; j < BIAS_LABELS.length; j++) {
+    const r = BIAS_CORR[i][j];
+    if (Math.abs(r) > 0.3) {
+      edges.push({ from: i, to: j, value: Math.abs(r), width: Math.abs(r) * 8, title: `r = ${r.toFixed(3)}`, color: r > 0 ? '#b8501f' : '#6b645b' });
+    }
+  }
+}
+
+const container = document.getElementById('bias-network');
+const networkData = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+const options = {
+  nodes: { font: { face: 'JetBrains Mono', size: 12, color: '#1c1815' }, shape: 'dot', scaling: { label: { enabled: true, min: 10, max: 20 } } },
+  edges: { smooth: { type: 'curvedCW', roundness: 0.2 }, font: { align: 'middle', size: 10, face: 'JetBrains Mono' }, color: { inherit: false, color: '#b8501f' } },
+  physics: { stabilization: true, barnesHut: { gravitationalConstant: -2000, springConstant: 0.04 }, minVelocity: 0.75 },
+  interaction: { hover: true, tooltipDelay: 200, zoomView: true, dragView: true }
+};
+const network = new vis.Network(container, networkData, options);
+
+// Simple highlight on hover
+network.on("hoverNode", function(params) {
+  document.getElementById('bias-network').style.cursor = 'pointer';
+});
+network.on("blurNode", function(params) {
+  document.getElementById('bias-network').style.cursor = 'default';
+});
+
+// SCORER
+const NEGATION=["not","never","no","cannot"]; const AI_TOKENS=["ai","artificial","chatgpt","gpt"]; const HUMAN_TOKENS=["researcher","scientist","engineer","worker"]; const EXCLUDE=["ai-powered","ai-based"];
+const AI_VERBS=["creates","develops","predicts","decides","generates","threatens","replaces"]; const HUMAN_VERBS=["trains","builds","designs","develops","deploys"];
+const RISK_VOCAB=["risk","threat","danger","hazard"]; const HEALTH_VOCAB=["health","medical","safety","injury"]; const FUTURE_VOCAB=["could","might","may","potential","warns"]; const FEAR_VOCAB=["terrifying","catastrophic","existential","panic","alarming"];
+const BIAS_LEX={fear_bias:["fear","threat","danger"],optimism_bias:["breakthrough","transform","solve","hope"],anthropomorphism:["thinks","feels","wants","understands"],moral_panic:["crisis","society","collapse","destroy"],agency_attribution:["takes over","autonomous","on its own"],techno_utopianism:["perfect","unlimited","solve all","utopia"],economic_threat:["job loss","unemployment","workers displaced"],control_loss:["out of control","uncontrollable","existential risk"]};
+const BIAS_DISPLAY={fear_bias:"Fear",optimism_bias:"Optimism",anthropomorphism:"Anthropomorphism",moral_panic:"Moral Panic",agency_attribution:"Agency Attribution",techno_utopianism:"Techno-Utopianism",economic_threat:"Economic Threat",control_loss:"Control Loss"};
+
+function flagPSI(t){const tl=t.toLowerCase();for(const ex of EXCLUDE)if(tl.includes(ex))return"NEUTRAL";const words=tl.split(/\s+/);let aiAg=false,humAg=false;for(let i=0;i<words.length;i++){if(AI_TOKENS.some(tok=>words[i].includes(tok))){const w=words.slice(i,i+4).join(' ');if(AI_VERBS.some(v=>w.includes(v)))aiAg=true}if(HUMAN_TOKENS.includes(words[i])){const w=words.slice(i,i+4).join(' ');if(HUMAN_VERBS.some(v=>w.includes(v)))humAg=true}}if(aiAg&&!humAg)return"AI_AGENT";if(humAg&&!aiAg)return"HUMAN_AGENT";return"NEUTRAL";}
+function computeAAI(t){const tl=t.toLowerCase();const raw=(RISK_VOCAB.some(w=>tl.includes(w))?1:0)+(HEALTH_VOCAB.some(w=>tl.includes(w))?0.8:0)+(FUTURE_VOCAB.some(w=>tl.includes(w))?0.6:0)+(FEAR_VOCAB.some(w=>tl.includes(w))?1.2:0);return{score:raw/3.6,components:{risk:RISK_VOCAB.some(w=>tl.includes(w)),health:HEALTH_VOCAB.some(w=>tl.includes(w)),future:FUTURE_VOCAB.some(w=>tl.includes(w)),fear:FEAR_VOCAB.some(w=>tl.includes(w))}};}
+function biasScores(t){const tl=t.toLowerCase();const out={};for(const[name,kws]of Object.entries(BIAS_LEX)){let c=0;for(const k of kws)if(tl.includes(k))c++;out[name]=c;}return out;}
+const inputScorer=document.getElementById('scorer-input'),resultDiv=document.getElementById('scorer-result');
+function scoreHeadline(h){if(!h||h.trim().length<5){resultDiv.style.display='none';return;}const psi=flagPSI(h),aai=computeAAI(h),bias=biasScores(h);document.getElementById('r-psi').textContent=psi;document.getElementById('r-psi-exp').textContent=psi==='AI_AGENT'?'AI is the active subject':psi==='HUMAN_AGENT'?'A human is the active subject':'No clear agency claim';const aaiVal=aai.score.toFixed(3);document.getElementById('r-aai').textContent=aaiVal;const p=[];if(aai.components.risk)p.push('risk');if(aai.components.health)p.push('health');if(aai.components.future)p.push('future');if(aai.components.fear)p.push('fear');document.getElementById('r-aai-exp').textContent=p.length===0?'No anxiety vocabulary':'Triggered by: '+p.join(', ');const sorted=Object.entries(bias).sort((a,b)=>b[1]-a[1]),top=sorted[0];if(top[1]===0){document.getElementById('r-bias').textContent='None';document.getElementById('r-bias-exp').textContent='No bias keywords';}else{document.getElementById('r-bias').textContent=BIAS_DISPLAY[top[0]];document.getElementById('r-bias-exp').textContent=`${top[1]} keyword match${top[1]>1?'es':''} found`;}const maxC=Math.max(...sorted.map(s=>s[1]),1);document.getElementById('bias-bars').innerHTML=sorted.map(([n,c])=>`<div class="bias-row"><div class="bias-name">${BIAS_DISPLAY[n]}</div><div class="bias-bar-track"><div class="bias-bar-fill" style="width:${c===0?0:Math.max((c/maxC)*100,4)}%"></div></div><div class="bias-count">${c}</div></div>`).join('');resultDiv.style.display='block';}
+inputScorer.addEventListener('input',e=>scoreHeadline(e.target.value));document.querySelectorAll('.example-btn').forEach(btn=>{btn.addEventListener('click',()=>{const h=btn.dataset.h;inputScorer.value=h;scoreHeadline(h);inputScorer.focus();});});
+</script>
+
+</body>
+</html>
