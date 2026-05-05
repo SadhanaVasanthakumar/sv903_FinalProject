@@ -1,0 +1,135 @@
+# CS 210 Final Project — What the Headlines Say | Sadhana Vasanthakumar
+# Requirements file for full reproducibility
+#
+# Python version: 3.10+ recommended (tested on 3.11)
+#
+# Install everything:
+#   pip install -r requirements.txt
+#
+# After install, run once:
+#   python -m nltk.downloader vader_lexicon punkt stopwords
+#
+# Git LFS (for large CSV/model files):
+#   brew install git-lfs  (macOS)
+#   sudo apt install git-lfs  (Ubuntu/Debian)
+#   git lfs install
+#   git lfs track "*.csv" "*.pkl" "*.db" "*.h5"
+#   git add .gitattributes
+
+# DATA COLLECTION
+# ------------------------------------------------------------
+gnews==0.3.7                  # Google News RSS scraper (Notebook 00)
+requests==2.31.0              # HTTP requests used by gnews internally
+urllib3==2.1.0                # HTTP client (gnews dependency)
+charset-normalizer==3.3.2     # Encoding detection (requests dependency)
+certifi==2024.2.2             # SSL certificates
+
+# DATA STORAGE AND DATABASE
+# ------------------------------------------------------------
+# sqlite3 ships with Python standard library — no separate install
+# The following are used for reading/writing CSVs and the DB
+
+pandas==2.2.1                 # DataFrames, CSV I/O, all tabular ops
+numpy==1.26.4                 # Numerical arrays (pandas dependency)
+pyarrow==15.0.2               # Optional fast CSV backend for pandas
+
+# NLP: SENTIMENT ANALYSIS
+# ------------------------------------------------------------
+nltk==3.8.1                   # VADER sentiment analysis (Notebook 02)
+# After installing nltk, download the VADER lexicon:
+#   python -m nltk.downloader vader_lexicon
+
+# NLP: SENTENCE EMBEDDINGS
+# ------------------------------------------------------------
+sentence-transformers==2.7.0  # all-MiniLM-L6-v2 embeddings (Notebook 02)
+transformers==4.40.1          # HuggingFace backbone for sentence-transformers
+torch==2.3.0                  # PyTorch backend (CPU-only is fine for this project)
+tokenizers==0.19.1            # Fast tokenizer (transformers dependency)
+huggingface-hub==0.23.0       # Model download from HF Hub
+
+# MACHINE LEARNING
+# ------------------------------------------------------------
+scikit-learn==1.4.2           # Ridge, Lasso, DT, RF, GBM, KNN, KMeans,
+                               # PCA, MinMaxScaler, StandardScaler,
+                               # LabelEncoder, train_test_split,
+                               # cross_val_score, classification_report,
+                               # cohen_kappa_score, cosine_similarity
+joblib==1.3.2                 # Parallel jobs for sklearn (sklearn dependency)
+scipy==1.13.0                 # stats, pearsonr, spearmanr, ttest_ind,
+                               # chi2_contingency (Notebooks 03 and 04)
+
+# VISUALIZATION
+# ------------------------------------------------------------
+matplotlib==3.8.4             # All plots and figures
+seaborn==0.13.2               # Heatmaps, correlation matrix, distribution plots
+networkx==3.3                 # Bias co-occurrence network graph (Notebook 02)
+
+# UTILITIES
+# ------------------------------------------------------------
+tqdm==4.66.2                  # Progress bars (embedding loop in Notebook 02)
+python-dateutil==2.9.0        # Date parsing (pandas dependency)
+pytz==2024.1                  # Timezone handling
+
+# OPTIONAL: JUPYTER / NOTEBOOK ENVIRONMENT
+# ------------------------------------------------------------
+jupyter==1.0.0                # Jupyter classic notebook
+jupyterlab==4.2.0             # JupyterLab interface (recommended)
+ipykernel==6.29.4             # Kernel for notebooks
+ipywidgets==8.1.2             # Widget support
+nbformat==5.10.4              # Notebook file format handling
+
+# GIT LFS SETUP (for large files — run these commands once)
+# ------------------------------------------------------------
+#
+# The following files in this repo exceed 50MB and require Git LFS:
+#   outputs/ai_headlines_full.csv     (~84MB)
+#   outputs/features_for_modeling.csv (~63MB)
+#   outputs/ai_headlines_raw.csv      (~19MB)
+#   data/ai_headlines.db              (~103MB)
+#
+# Setup steps (run once per machine):
+#
+#   macOS:
+#     brew install git-lfs
+#
+#   Ubuntu / Debian / WSL:
+#     sudo apt install git-lfs
+#
+#   Windows:
+#     winget install GitHub.GitLFS
+#     or download from https://git-lfs.com
+#
+#   All platforms (after installing the binary):
+#     git lfs install
+#
+# Track file types (already configured in .gitattributes if cloning):
+#     git lfs track "*.csv"
+#     git lfs track "*.db"
+#     git lfs track "*.pkl"
+#     git lfs track "*.h5"
+#     git add .gitattributes
+#
+# Verify LFS is working:
+#     git lfs ls-files
+#
+# Pull LFS files after cloning:
+#     git lfs pull
+
+# NOTES ON VERSIONING
+# ------------------------------------------------------------
+#
+# sentence-transformers downloads the all-MiniLM-L6-v2 model
+# (~80MB) on first run and caches it in ~/.cache/huggingface/.
+# An internet connection is required the first time only.
+#
+# If running on CPU (no CUDA GPU), torch will default to CPU
+# automatically. Embedding 179,372 headlines takes ~8.6 minutes
+# on a standard laptop CPU (confirmed on Intel Core i7).
+#
+# For a minimal install that skips JupyterLab:
+#   pip install gnews pandas numpy nltk sentence-transformers \
+#               torch scikit-learn scipy matplotlib seaborn \
+#               networkx tqdm
+
+# This will allow you to run the core data collection, processing,
+# and modeling scripts without the notebook environment. 
