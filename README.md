@@ -52,7 +52,7 @@ FinalProject/
 │   └── gold_standard_labeled.csv   # 200 hand-labeled headlines
 │
 ├── checkpoints/                     # Monthly scraping checkpoints (raw)
-│   └── window_*.csv                 # One file per monthly window
+│   └── checkpoint_*.csv                 # One file per monthly window
 │
 └── scraping_results_summary.json    # Full scraping session metadata
 ```
@@ -133,13 +133,12 @@ If you clone the repository without Git LFS installed, the large files will appe
 
 The project website is a single self-contained HTML file (`index.html`) with no server dependencies. It includes a live headline scanner using the same keyword lexicons from the notebooks, all 19 figures with descriptions, cluster explorer, monthly trend charts, and the full corpus breakdown.
 
-The website is hosted at **[sv903.github.io/FinalProject](https://sv903.github.io/FinalProject)](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
-
+The website is hosted at **[[sv903.github.io/FinalProject](https://sv903.github.io/FinalProject)](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
 ---
 
 ## Report and Submission
 
-The final report PDF is included in the repository root as `CS210_FinalReport.pdf`.
+The final report PDF is included in the repository root as `sv903_FinalReport.pdf`.
 
 All project materials including the demo video, report, code, and data are also submitted via Codebench under the "Final Project" assignment.
 
