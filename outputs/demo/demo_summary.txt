@@ -1,0 +1,24 @@
+CS 210 Final Project — TA Demo Summary
+Run timestamp:    2026-05-05 15:51:06
+Random seed:      42
+Sample size:      500 headlines (20 windows)
+
+SECTION 2 — NLP PIPELINE
+  VADER mean compound:      +0.0878
+  PSI overall:              80.8  (>0 = AI-skewed)
+  PSI AI_AGENT rate:        72.2%
+  AAI mean score:           0.0292
+  Invisible Human rate:     1.00%
+  Dominant bias (mode):     techno_utopianism
+
+SECTION 3 — MODELING
+  Ridge R-squared (no-circ): -0.0668
+  Ridge CV R-sq:             -0.010 ± 0.038
+  K-means best k:            3  (silhouette=0.3027)
+
+SECTION 4 — VALIDATION
+  IH rate AI demo:          1.00%
+  IH rate climate control:  9.52%
+  Difference:               -8.52%
+
+All pipeline stages completed successfully.
