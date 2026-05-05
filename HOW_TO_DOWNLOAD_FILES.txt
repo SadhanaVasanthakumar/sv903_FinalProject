@@ -20,7 +20,6 @@ ALSO: Please check all Codebench submissions, not just the most recent one.
 Earlier submissions may contain output files not present in the latest upload.
 The most complete and up-to-date version of everything is always on GitHub.
 
-================================================================================
 STEP 0 — VERIFY YOU HAVE PYTHON 3.10+
 ================================================================================
 
@@ -30,7 +29,6 @@ STEP 0 — VERIFY YOU HAVE PYTHON 3.10+
 
 If you are below 3.10, install a newer version from python.org before continuing.
 
-================================================================================
 STEP 1 — INSTALL GIT LFS
 ================================================================================
 
