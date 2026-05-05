@@ -13,7 +13,7 @@ This project analyzes 179,372 AI news headlines scraped from 13,019 publishers a
 
 Key results: PSI declined at −10.6 points/month while remaining consistently above 700 (far above the balanced-framing threshold of 100); AAI rose at +0.00048 units/month with Safety and Risk headlines carrying five times the anxiety of product coverage; and 92.4% of all headlines contain zero vocabulary from any human-experience domain.
 
-**[Interactive Website](https://sv903.github.io/FinalProject)** — live headline scorer, full figure gallery, cluster explorer, and corpus browser.
+**[Interactive Website](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** — live headline scorer, full figure gallery, cluster explorer, and corpus browser.
 
 ---
 
