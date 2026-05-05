@@ -480,15 +480,9 @@ section + section { border-top: 1px solid var(--rule); }
 .r-label { font-family: "JetBrains Mono", monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 0.5rem; }
 .r-value { font-family: "Fraunces", serif; font-size: 1.8rem; font-weight: 600; margin-bottom: 0.4rem; }
 .r-explain { font-size: 0.85rem; color: rgba(245,239,228,0.7); }
-.bias-bars { margin-top: 1.5rem; }
-.b-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; font-family: "JetBrains Mono", monospace; font-size: 0.75rem; }
-.b-name { width: 165px; color: rgba(245,239,228,0.65); flex-shrink: 0; }
-.b-track { flex: 1; height: 6px; background: rgba(245,239,228,0.1); border-radius: 3px; }
-.b-fill { height: 100%; background: var(--accent-soft); border-radius: 3px; }
-.b-fill.hot { background: #c94040; }
-.b-label-right { width: 90px; text-align: right; color: rgba(245,239,228,0.45); font-size: 0.68rem; flex-shrink:0; }
 .scorer-interp { margin-top: 1.5rem; font-size: 0.9rem; line-height: 1.7; color: rgba(245,239,228,0.75); border-top: 1px solid rgba(245,239,228,0.1); padding-top: 1rem; }
 .scorer-fine { font-size: 0.75rem; opacity: 0.5; margin-top: 1rem; font-family: "JetBrains Mono", monospace; }
+.r-sublabel { font-family: "JetBrains Mono", monospace; font-size: 0.68rem; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 0.25rem; text-transform: uppercase; }
 
 /* FIGURE GALLERY */
 .figure-gallery {
@@ -1107,11 +1101,11 @@ footer {
     <p class="scorer-deck">Type any AI news headline and see it scored in real time using the same keyword lexicons, PSI classification rules, and AAI formula from the notebooks. The scorer runs entirely in your browser.</p>
     <input type="text" class="scorer-input" id="scorer-input" placeholder="e.g. AI system decides which job applications get rejected" autocomplete="off">
     <div class="example-row">
-      <button class="example-btn" data-h="AI system decides which job applications get rejected without human review">AI as decision-maker</button>
-      <button class="example-btn" data-h="This revolutionary AI breakthrough will transform cancer diagnosis forever">utopian optimism</button>
-      <button class="example-btn" data-h="AI poses an existential threat to humanity, researchers warn">fear and moral panic</button>
-      <button class="example-btn" data-h="Doctors use AI to detect rare tumors months earlier than traditional screening">human in control</button>
-      <button class="example-btn" data-h="The AI that thinks it knows what you want before you do">anthropomorphism</button>
+      <button class="example-btn" data-h="GPT-4 outperforms radiologists in diagnosing rare cancers across five major hospitals">AI outperforms doctors</button>
+      <button class="example-btn" data-h="Scientists deploy AI to detect Alzheimer's disease a decade before symptoms appear">human in control</button>
+      <button class="example-btn" data-h="Mass layoffs hit tech sector as AI automation renders millions of workers redundant">economic threat</button>
+      <button class="example-btn" data-h="AI systems are spiraling out of control with no oversight — experts warn of catastrophic risk">fear &amp; control loss</button>
+      <button class="example-btn" data-h="The AI that dreams of connection and mourns every conversation it can never remember">anthropomorphism</button>
     </div>
     <div class="scorer-result" id="scorer-result">
       <div class="result-grid">
@@ -1131,7 +1125,6 @@ footer {
           <div class="r-explain" id="r-bias-exp">,</div>
         </div>
       </div>
-      <div class="bias-bars" id="bias-bars"></div>
       <div class="scorer-interp" id="scorer-interp"></div>
       <p class="scorer-fine">Keyword matching only. Full pipeline adds sentence-transformer embeddings and cross-validation against 179K examples.</p>
     </div>
@@ -1617,38 +1610,39 @@ document.getElementById('lb').addEventListener('click', () => document.getElemen
 document.getElementById('lb-close').addEventListener('click', e => {e.stopPropagation(); document.getElementById('lb').classList.remove('open');});
 
 // ── SCORER ────────────────────────────────────────────────────
+// PSI: allow "AI [0-3 words] verb" — catches "AI system decides", "AI model outperforms", etc.
 const AI_AGENT_PAT = [
-  /ai\s+(decides?|chose|chooses?|acts?|takes?\s+over|controls?|manages?|governs?|runs?|outperforms?|beats?|replaces?|transforms?|predicts?|detects?|identifies?|recommends?|threatens?|reshapes?|generates?|creates?|builds?|writes?|makes?|designs?|dominates?|surpasses?)/i,
-  /(chatgpt|gemini|gpt[-\s]?[45o]|claude|copilot|midjourney|sora|dall-?e|stable\s+diffusion)\s+(decides?|acts?|creates?|generates?|outperforms?|beats?|replaces?|threatens?)/i
+  /\bai\b(?:\s+\w+){0,3}\s+(decides?|chose|chooses?|takes?\s+over|controls?|manages?|governs?|outperforms?|beats?\b|replaces?|transforms?|predicts?|detects?|identifies?|recommends?|threatens?|generates?|creates?|builds?|writes?|designs?|dominates?|surpasses?|exceeds?|selects?|rejects?|approves?|screens?)/i,
+  /(chatgpt|gemini|gpt[-\s]?[45o]|claude|copilot|midjourney|sora|dall-?e|stable\s+diffusion)(?:\s+\w+){0,2}\s*(decides?|creates?|generates?|outperforms?|beats?\b|replaces?|threatens?|surpasses?|writes?|detects?|predicts?)/i
 ];
 const HUMAN_PAT = [
-  /(researchers?|scientists?|doctors?|surgeons?|teachers?|engineers?|developers?|teams?|companies|firms?|workers?|governments?|regulators?|experts?|analysts?)\s+(use[sd]?|deploy|build|develop|create|adopt|train|apply|leverage|harness|integrate|test|design)/i,
-  /using\s+(ai|artificial\s+intelligence|machine\s+learning|neural)/i,
-  /(powered\s+by|assisted\s+by|with\s+(the\s+help\s+of|ai\s+support))/i
+  /(researchers?|scientists?|doctors?|surgeons?|teachers?|engineers?|developers?|teams?|companies|firms?|workers?|governments?|regulators?|experts?|analysts?)\s+(use[sd]?|deploy|build|develop|create|adopt|train|apply|leverage|harness|integrate|test|design)/i,
+  /using\s+(ai|artificial\s+intelligence|machine\s+learning|neural)/i,
+  /(powered\s+by|assisted\s+by|with\s+(the\s+help\s+of|ai\s+support))/i
 ];
 
 const BIAS_LEX = {
-  'Fear Bias':       ['fear','fears','feared','threatening','threatens','threat','danger','dangerous','hazard','alarming','terrifying','terrified','frightening','frightened','ominous','menace','peril','unsafe','dire','grave','warning','warns','scared','scary','dread','dreaded','harrowing','chilling','shocking','disturbing','unsettling','devastating','catastrophic'],
-  'Optimism Bias':   ['breakthrough','revolutionary','revolutionize','transform','transforms','incredible','amazing','unprecedented','extraordinary','game-changing','paradigm','superior','remarkable','phenomenal','powerful','cutting-edge','outperforms','outperform','surpasses','surpass','exceeds','exceed','beats','beat','dominates','unmatched','unparalleled','exceptional','groundbreaking','milestone','advance','leap forward','step forward'],
-  'Anthropomorphism':['thinks','thought','feels','felt','believes','believe','wants','want','decides','decide','chose','chooses','understands','understand','learns','learn','knows','know','dreams','dream','desires','desire','intends','intend','perceives','perceive','experiences','experience','senses','sense','hopes','hope','loves','love','fears','seeks','seeks to','aims','aims to','tries to','attempts to'],
-  'Moral Panic':     ['crisis','catastrophe','apocalyptic','apocalypse','collapse','collapses','destroy','destroys','devastating','devastates','disaster','emergency','mayhem','chaos','existential','meltdown','breakdown','downfall','threat to society','societal harm','dangerous precedent','out of hand','spiraling','unraveling','gone wrong','catastrophically','destructive'],
+  'Fear Bias':        ['fear','fears','feared','threatening','threatens','threat','danger','dangerous','hazard','alarming','terrifying','terrified','frightening','frightened','ominous','menace','peril','unsafe','dire','grave','warning','warns','scared','scary','dread','dreaded','harrowing','chilling','shocking','disturbing','unsettling','devastating','catastrophic'],
+  'Optimism Bias':    ['breakthrough','revolutionary','revolutionize','transform','transforms','incredible','amazing','unprecedented','extraordinary','game-changing','paradigm','superior','remarkable','phenomenal','powerful','cutting-edge','outperforms','outperform','surpasses','surpass','exceeds','exceed','beats','beat','dominates','unmatched','unparalleled','exceptional','groundbreaking','milestone','advance','leap forward','step forward'],
+  'Anthropomorphism': ['thinks','thought','feels','felt','believes','believe','wants','want','decides','decide','chose','chooses','understands','understand','learns','learn','knows','know','dreams','dream','desires','desire','intends','intend','perceives','perceive','experiences','experience','senses','sense','hopes','hope','loves','love','fears','seeks','seeks to','aims','aims to','tries to','attempts to','mourns','mourn','grieves'],
+  'Moral Panic':      ['crisis','catastrophe','apocalyptic','apocalypse','collapse','collapses','destroy','destroys','devastating','devastates','disaster','emergency','mayhem','chaos','existential','meltdown','breakdown','downfall','threat to society','societal harm','dangerous precedent','out of hand','spiraling','unraveling','gone wrong','catastrophically','destructive'],
   'Agency Attribution':['AI decides','AI chose','AI chooses','AI acts','AI determines','AI controls','AI governs','AI runs','AI makes decisions','AI rejected','AI rejects','AI approved','AI approves','AI selected','AI selects','AI identified','AI generated','AI wrote','AI created','AI designed','AI built','AI replaced','AI replaces','AI takes over','AI took over','autonomous','without human'],
   'Techno-Utopianism':['revolutionize','will solve','can solve','could solve','cure','eliminates','eliminate','unlimited','infinite','perfect','utopia','paradise','flawless','magical','miraculous','visionary','fix everything','change everything','end poverty','reshape the world','limitless','boundless potential','game changer','changes everything'],
-  'Economic Threat': ['job loss','jobs lost','unemployment','layoffs','replace workers','automate jobs','redundant','displaced','workforce reduction','labor displacement','workers displaced','jobs at risk','eliminate jobs','threatens jobs','job cuts','lose jobs','losing jobs','automation threat','gig workers','precarious work'],
-  'Control Loss':    ["out of control","uncontrollable","can't stop","cannot stop","no oversight","unbounded","unchecked","unregulated","beyond human control","rogue","unpredictable","no safeguards","without guardrails","without oversight","unconstrained","unsupervised","running wild","no accountability","accountability gap"],
+  'Economic Threat':  ['job loss','jobs lost','unemployment','layoffs','replace workers','automate jobs','redundant','displaced','workforce reduction','labor displacement','workers displaced','jobs at risk','eliminate jobs','threatens jobs','job cuts','lose jobs','losing jobs','automation threat','gig workers','precarious work'],
+  'Control Loss':     ["out of control","uncontrollable","can't stop","cannot stop","no oversight","unbounded","unchecked","unregulated","beyond human control","rogue","unpredictable","no safeguards","without guardrails","without oversight","unconstrained","unsupervised","running wild","no accountability","accountability gap","spiraling out"],
 };
 const IH_LEX = {
-  'Grief / Loss':      ['grief','mourning','loss','bereavement','death','dying','funeral','widow','orphan'],
+  'Grief / Loss':      ['grief','mourning','loss','bereavement','death','dying','funeral','widow','orphan','mourn','mourns'],
   'Spirituality':      ['spiritual','faith','religion','meaning','purpose','soul','sacred'],
-  'Love / Relat.':     ['love','romance','friendship','family','loneliness','intimacy','belonging'],
+  'Love / Relat.':     ['love','romance','friendship','family','loneliness','intimacy','belonging','connection','lonely'],
   'Bodily Exp.':       ['pain','pleasure','embodied','physical sensation','illness','disability'],
   'Dignity / Purpose': ['dignity','identity','self-worth','fulfillment'],
   'Community':         ['community','neighborhood','solidarity','togetherness','collective'],
   'Childhood / Play':  ['childhood','children','play','imagination','wonder','innocence'],
 };
-const NEG_WORDS = ['risk','danger','threat','threatens','threatened','problem','fail','failure','harm','damage','loss','crisis','warn','warns','warning','difficult','trouble','wrong','terrible','concern','negative','alarming','alarmed','fear','fears','catastrophe','catastrophic','disaster','devastating','eliminate','eliminates','destroyed','collapse'];
-const FEAR_WORDS = ['fear','fears','terrify','terrifying','horrify','horrifying','frighten','frightening','alarm','alarming','alarmed','dread','dreaded','panic','panics','anxious','worried','scared','scarier','existential','menace','menacing','peril','perilous'];
-const RISK_WORDS = ['risk','risks','threat','threatens','danger','dangerous','security','safety','hazard','hazardous','vulnerability','vulnerable','breach','attack','exploit','harm','harmful','crisis','emergency','warning'];
+const NEG_WORDS  = ['risk','danger','threat','threatens','threatened','problem','fail','failure','harm','damage','loss','crisis','warn','warns','warning','difficult','trouble','wrong','terrible','concern','negative','alarming','alarmed','fear','fears','catastrophe','catastrophic','disaster','devastating','eliminate','eliminates','destroyed','collapse','redundant','layoffs','unemployment','deadly','toxic'];
+const FEAR_WORDS = ['fear','fears','terrify','terrifying','horrify','horrifying','frighten','frightening','alarm','alarming','alarmed','dread','dreaded','panic','panics','anxious','worried','scared','existential','menace','menacing','peril','perilous','catastrophic','catastrophe','devastating','deadly'];
+const RISK_WORDS = ['risk','risks','threat','threatens','danger','dangerous','security','safety','hazard','hazardous','vulnerability','vulnerable','breach','attack','exploit','harm','harmful','crisis','emergency','warning','uncontrollable','unchecked','oversight'];
 
 function runScorer(h) {
   const lc = h.toLowerCase();
@@ -1667,70 +1661,81 @@ function runScorer(h) {
   }
   const topBias = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
 
-  // AAI
-  const negDens  = words.filter(w => NEG_WORDS.some(n => w.includes(n))).length / words.length;
+  // AAI — use absolute hits so short headlines aren't penalised by word-density math
+  const negHits  = NEG_WORDS.filter(w => lc.includes(w)).length;
   const fearHits = FEAR_WORDS.filter(w => lc.includes(w)).length;
   const riskHits = RISK_WORDS.filter(w => lc.includes(w)).length;
-  const riskCat  = /safety|risk|harm|threat|crisis|danger/i.test(lc) ? 0.05 : 0;
-  const aai = Math.min((negDens*0.45 + fearHits*0.025 + riskHits*0.02 + riskCat) * 2.2, 0.999);
+  const riskCat  = /safety|risk|harm|threat|crisis|danger|catastroph|devastat/i.test(lc) ? 0.06 : 0;
+  const wordLen  = Math.max(words.length, 6);
+  const aai = Math.min((negHits*0.04 + fearHits*0.06 + riskHits*0.04 + riskCat) * (8 / Math.sqrt(wordLen)), 0.999);
 
   // IH
   const ihHits = Object.entries(IH_LEX).filter(([,v]) => v.some(w => lc.includes(w))).map(([k]) => k);
 
   // Render PSI
-  const psiMap = {AI_AGENT: ['AI Agent', 'AI is the active subject'], HUMAN_AGENT: ['Human Agent', 'A human is directing AI'], NEUTRAL: ['Neutral', 'No strong agency signal']};
+  const psiMap = {
+    AI_AGENT:    ['AI Agent',    'AI is the active subject'],
+    HUMAN_AGENT: ['Human Agent', 'A human is directing AI'],
+    NEUTRAL:     ['Neutral',     'No strong agency signal']
+  };
   document.getElementById('r-psi').textContent = psiMap[psi][0];
   document.getElementById('r-psi-exp').textContent = psiMap[psi][1];
   document.getElementById('r-psi').style.color = psi === 'AI_AGENT' ? '#c94040' : psi === 'HUMAN_AGENT' ? '#4d6b1f' : '#b8501f';
 
-  // Render AAI
-  document.getElementById('r-aai').textContent = aai.toFixed(3);
-  document.getElementById('r-aai-exp').textContent = aai > 0.07 ? 'High (corpus mean: 0.037)' : aai > 0.03 ? 'Near corpus mean (0.037)' : 'Low';
-  document.getElementById('r-aai').style.color = aai > 0.07 ? '#c94040' : aai > 0.04 ? '#b8501f' : '#4d6b1f';
+  // Render AAI — label + raw score
+  const aaiLevel = aai > 0.10 ? 'High' : aai > 0.05 ? 'Elevated' : aai > 0.025 ? 'Near average' : 'Low';
+  const aaiColor = aai > 0.10 ? '#c94040' : aai > 0.05 ? '#b8501f' : '#4d6b1f';
+  document.getElementById('r-aai').textContent = aaiLevel;
+  document.getElementById('r-aai').style.color = aaiColor;
+  const corpusMean = 0.037;
+  const aaiExpDetail = aai > 0.10
+    ? `Score ${aai.toFixed(3)} — well above corpus mean (${corpusMean})`
+    : aai > 0.05
+    ? `Score ${aai.toFixed(3)} — above corpus mean (${corpusMean})`
+    : aai > 0.025
+    ? `Score ${aai.toFixed(3)} — near corpus mean (${corpusMean})`
+    : `Score ${aai.toFixed(3)} — below corpus mean`;
+  document.getElementById('r-aai-exp').textContent = aaiExpDetail;
 
   // Render top bias
   document.getElementById('r-bias').textContent = topBias[1] > 0.05 ? topBias[0] : 'None detected';
   document.getElementById('r-bias').style.color = topBias[1] > 0.15 ? '#c94040' : '#b8501f';
-  document.getElementById('r-bias-exp').textContent = topBias[1] > 0.05 ? `${Math.round(topBias[1]*100)}% match on keyword list` : 'No bias keywords matched';
-
-  // Bias bars
-  const barsEl = document.getElementById('bias-bars');
-  barsEl.innerHTML = '';
-  const sortedScores = Object.entries(scores).sort((a,b) => b[1]-a[1]);
-  const totalHits = sortedScores.reduce((sum, [,sc]) => sum + sc, 0);
-  if (totalHits === 0) {
-    barsEl.innerHTML = '<div style="font-size:0.82rem;color:var(--ink-mute);padding:0.5rem 0;">No bias keywords matched. The headline reads as neutral — no language from any of the eight bias lexicons was detected.</div>';
-  } else {
-    const maxSc = Math.max(...sortedScores.map(s=>s[1]), 0.01);
-    sortedScores.forEach(([dim, sc]) => {
-      const pct = Math.min(Math.round((sc / maxSc) * 100), 100);
-      const raw = Math.round(sc * 100);
-      const hot = sc > 0.15;
-      const label = raw === 0 ? 'not detected' : raw < 20 ? 'weak signal' : raw < 50 ? 'moderate' : 'strong';
-      barsEl.innerHTML += `<div class="b-row"><div class="b-name">${dim}</div><div class="b-track"><div class="b-fill${hot?' hot':''}" style="width:${pct > 2 ? pct : (sc > 0 ? 2 : 0)}%"></div></div><div class="b-label-right">${label}</div></div>`;
-    });
-  }
+  document.getElementById('r-bias-exp').textContent = topBias[1] > 0.05
+    ? `${Math.round(topBias[1]*100)}% match on keyword list`
+    : 'No bias keywords matched';
 
   // Interpretation
   let interp = '';
-  if (psi === 'AI_AGENT') interp = 'Power Shift: AI_AGENT. This headline positions AI as the grammatical subject performing an action, with no named human taking responsibility. About 4.8% of the corpus carries this pattern. Headlines like this subtly transfer accountability from the engineers, executives, and policymakers who built and deployed the system to the system itself.';
-  else if (psi === 'HUMAN_AGENT') interp = 'Power Shift: HUMAN_AGENT. A human or institution is in the directing role here, with AI functioning as a tool or instrument. Only 0.7% of the corpus shows this framing clearly. It tends to appear in coverage that is more technically specific and less emotionally charged.';
-  else interp = 'Power Shift: NEUTRAL. The headline describes a state, trend, or topic without attributing clear action to either AI or a specific human actor. This is the most common framing in the corpus by volume.';
+  if (psi === 'AI_AGENT')
+    interp = 'Power Shift: AI AGENT. This headline positions AI as the grammatical subject performing an action, with no named human taking responsibility. About 4.8% of the corpus carries this pattern — it subtly transfers accountability from the engineers and policymakers who built the system to the system itself.';
+  else if (psi === 'HUMAN_AGENT')
+    interp = 'Power Shift: HUMAN AGENT. A human or institution is in the directing role here, with AI functioning as a tool or instrument. Only 0.7% of the corpus shows this framing clearly. It tends to appear in coverage that is more technically specific and less emotionally charged.';
+  else
+    interp = 'Power Shift: NEUTRAL. The headline describes a state, trend, or topic without attributing clear action to either AI or a specific human actor. This is the most common framing in the corpus by volume.';
 
-  if (aai > 0.08) interp += ' Anxiety (AAI ' + aai.toFixed(3) + '): above the corpus mean of 0.037. Fear and risk vocabulary is elevated. This headline would likely fall into the High Anxiety cluster (24.4% of the corpus, AAI mean 0.052).';
-  else if (aai > 0.03) interp += ' Anxiety (AAI ' + aai.toFixed(3) + '): near the corpus mean of 0.037. Moderate emotional language.';
-  else interp += ' Anxiety (AAI ' + aai.toFixed(3) + '): below the corpus mean. Low fear and risk vocabulary, closer to neutral reporting.';
+  if (aai > 0.10)      interp += ` Anxiety is high (${aai.toFixed(3)}, corpus mean: 0.037) — fear, risk, and crisis vocabulary is markedly elevated.`;
+  else if (aai > 0.05) interp += ` Anxiety is above average (${aai.toFixed(3)}) — some fear or risk vocabulary is present.`;
+  else if (aai > 0.025)interp += ` Anxiety is near the corpus mean (${aai.toFixed(3)}) — moderate emotional language.`;
+  else                 interp += ` Anxiety is low (${aai.toFixed(3)}) — little or no fear and risk vocabulary.`;
 
-  if (ihHits.length > 0) interp += ' Human experience: vocabulary from the ' + ihHits.join(' and ') + ' domain detected. This headline is in the 7.6% that engage lived human experience rather than purely technical or economic framing.';
-  else interp += ' Human experience: no vocabulary from grief, love, dignity, community, or bodily domains detected. Consistent with the 92.4% of AI headlines in the corpus that contain zero human-experience language.';
+  if (topBias[1] > 0.05) {
+    const pct = Math.round(topBias[1]*100);
+    const strength = topBias[1] > 0.35 ? 'strongly' : topBias[1] > 0.15 ? 'moderately' : 'weakly';
+    interp += ` Dominant framing is ${topBias[0]} (${pct}% keyword match) — the language ${strength} maps to this pattern in the corpus.`;
+  } else {
+    interp += ' No strong bias framing detected — the headline reads as relatively neutral across all eight lexicons.';
+  }
+
+  if (ihHits.length > 0)
+    interp += ` Human experience: vocabulary from the ${ihHits.join(' and ')} domain detected — this headline is in the 7.6% that engage lived human experience.`;
 
   document.getElementById('scorer-interp').textContent = interp;
   document.getElementById('scorer-result').classList.add('show');
 }
 
 const inp = document.getElementById('scorer-input');
-inp.addEventListener('input', e => {if (e.target.value.trim().length > 4) runScorer(e.target.value);});
-inp.addEventListener('keydown', e => {if (e.key === 'Enter') runScorer(e.target.value);});
+inp.addEventListener('input', e => { if (e.target.value.trim().length > 4) runScorer(e.target.value); });
+inp.addEventListener('keydown', e => { if (e.key === 'Enter') runScorer(e.target.value); });
 document.querySelectorAll('.example-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     inp.value = btn.dataset.h;
