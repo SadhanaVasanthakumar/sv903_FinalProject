@@ -133,7 +133,7 @@ If you clone the repository without Git LFS installed, the large files will appe
  
 The project website is a single self-contained HTML file (`index.html`) with no server dependencies. It includes a live headline scanner using the same keyword lexicons from the notebooks, all 19 figures with descriptions, cluster explorer, monthly trend charts, and the full corpus breakdown.
  
-The website is hosted at **[sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
+#### The website is hosted at **[sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
 ---
 
 ## Report and Submission
