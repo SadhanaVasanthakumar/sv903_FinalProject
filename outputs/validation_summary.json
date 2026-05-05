@@ -1,0 +1,77 @@
+{
+  "generated": "2026-05-04 19:32:26",
+  "psi_hand_validation": {
+    "status": "complete",
+    "n_labeled": 200,
+    "kappa": 0.368,
+    "kappa_interp": "fair",
+    "accuracy": 0.6
+  },
+  "ih_control_comparison": {
+    "n_ai": 179372,
+    "n_control": 4106,
+    "control_topic": "climate change",
+    "ai_any_pct": 7.55,
+    "ctrl_any_pct": 4.94,
+    "ai_lower_domains": 2,
+    "finding_strength": "weak",
+    "domains": [
+      {
+        "domain": "Grief Loss",
+        "ai_pct": 0.5413,
+        "ctrl_pct": 0.9011,
+        "diff_pct": -0.3598,
+        "ai_lower": true,
+        "p_sig": "p=0.003"
+      },
+      {
+        "domain": "Spirituality Meaning",
+        "ai_pct": 0.6082,
+        "ctrl_pct": 0.2435,
+        "diff_pct": 0.3647,
+        "ai_lower": false,
+        "p_sig": "p=0.004"
+      },
+      {
+        "domain": "Love Relationships",
+        "ai_pct": 0.9294,
+        "ctrl_pct": 0.7793,
+        "diff_pct": 0.15,
+        "ai_lower": false,
+        "p_sig": "n.s."
+      },
+      {
+        "domain": "Bodily Experience",
+        "ai_pct": 0.6054,
+        "ctrl_pct": 0.5358,
+        "diff_pct": 0.0696,
+        "ai_lower": false,
+        "p_sig": "n.s."
+      },
+      {
+        "domain": "Dignity Purpose",
+        "ai_pct": 0.5865,
+        "ctrl_pct": 0.0731,
+        "diff_pct": 0.5134,
+        "ai_lower": false,
+        "p_sig": "p<0.001"
+      },
+      {
+        "domain": "Community Belonging",
+        "ai_pct": 0.3122,
+        "ctrl_pct": 0.4871,
+        "diff_pct": -0.1749,
+        "ai_lower": true,
+        "p_sig": "n.s."
+      },
+      {
+        "domain": "Childhood Play",
+        "ai_pct": 4.1567,
+        "ctrl_pct": 1.924,
+        "diff_pct": 2.2327,
+        "ai_lower": false,
+        "p_sig": "p<0.001"
+      }
+    ]
+  }
+}

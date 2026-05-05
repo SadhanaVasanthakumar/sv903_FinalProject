@@ -1,0 +1,560 @@
+{
+  "generated": "2026-05-04 19:25:45",
+  "dataset": {
+    "total_headlines": 179372,
+    "unique_publishers": 13019,
+    "publishers_50plus": 593,
+    "date_range": "2024-08-01 to 2026-03-31",
+    "span_days": 607
+  },
+  "overall": {
+    "psi_overall": 733.0,
+    "aai_mean": 0.0369,
+    "bias_intensity_mean": 0.3801,
+    "regression_r2_honest": 0.0669,
+    "regression_r2_full": 0.2199,
+    "regression_circularity_inflation_pct": 228.7,
+    "regression_mae": 0.0591,
+    "classification_acc": 0.7439
+  },
+  "monthly_trend": [
+    {
+      "window": "2024-08",
+      "n_headlines": 6500,
+      "avg_aai": 0.0339,
+      "avg_bias_intensity": 0.3738,
+      "avg_vader": 0.085,
+      "n_ai_agent": 280,
+      "n_dual_agent": 3,
+      "n_human_agent": 37,
+      "psi_index": 756.8
+    },
+    {
+      "window": "2024-09",
+      "n_headlines": 6990,
+      "avg_aai": 0.0333,
+      "avg_bias_intensity": 0.3733,
+      "avg_vader": 0.0861,
+      "n_ai_agent": 287,
+      "n_dual_agent": 4,
+      "n_human_agent": 31,
+      "psi_index": 925.8
+    },
+    {
+      "window": "2024-10",
+      "n_headlines": 7453,
+      "avg_aai": 0.0342,
+      "avg_bias_intensity": 0.3785,
+      "avg_vader": 0.0876,
+      "n_ai_agent": 324,
+      "n_dual_agent": 3,
+      "n_human_agent": 37,
+      "psi_index": 875.7
+    },
+    {
+      "window": "2024-11",
+      "n_headlines": 6736,
+      "avg_aai": 0.0346,
+      "avg_bias_intensity": 0.3763,
+      "avg_vader": 0.0959,
+      "n_ai_agent": 280,
+      "n_dual_agent": 4,
+      "n_human_agent": 34,
+      "psi_index": 823.5
+    },
+    {
+      "window": "2024-12",
+      "n_headlines": 6849,
+      "avg_aai": 0.0317,
+      "avg_bias_intensity": 0.3767,
+      "avg_vader": 0.0867,
+      "n_ai_agent": 346,
+      "n_dual_agent": 2,
+      "n_human_agent": 42,
+      "psi_index": 823.8
+    },
+    {
+      "window": "2025-01",
+      "n_headlines": 7942,
+      "avg_aai": 0.0346,
+      "avg_bias_intensity": 0.3813,
+      "avg_vader": 0.075,
+      "n_ai_agent": 361,
+      "n_dual_agent": 4,
+      "n_human_agent": 34,
+      "psi_index": 1061.8
+    },
+    {
+      "window": "2025-02",
+      "n_headlines": 8303,
+      "avg_aai": 0.0333,
+      "avg_bias_intensity": 0.3791,
+      "avg_vader": 0.0784,
+      "n_ai_agent": 396,
+      "n_dual_agent": 7,
+      "n_human_agent": 55,
+      "psi_index": 720.0
+    },
+    {
+      "window": "2025-03",
+      "n_headlines": 8380,
+      "avg_aai": 0.0335,
+      "avg_bias_intensity": 0.3765,
+      "avg_vader": 0.0767,
+      "n_ai_agent": 387,
+      "n_dual_agent": 6,
+      "n_human_agent": 51,
+      "psi_index": 758.8
+    },
+    {
+      "window": "2025-04",
+      "n_headlines": 8643,
+      "avg_aai": 0.0346,
+      "avg_bias_intensity": 0.3758,
+      "avg_vader": 0.0693,
+      "n_ai_agent": 421,
+      "n_dual_agent": 7,
+      "n_human_agent": 59,
+      "psi_index": 713.6
+    },
+    {
+      "window": "2025-05",
+      "n_headlines": 9004,
+      "avg_aai": 0.0356,
+      "avg_bias_intensity": 0.381,
+      "avg_vader": 0.0615,
+      "n_ai_agent": 439,
+      "n_dual_agent": 17,
+      "n_human_agent": 68,
+      "psi_index": 645.6
+    },
+    {
+      "window": "2025-06",
+      "n_headlines": 9165,
+      "avg_aai": 0.0357,
+      "avg_bias_intensity": 0.3809,
+      "avg_vader": 0.057,
+      "n_ai_agent": 457,
+      "n_dual_agent": 9,
+      "n_human_agent": 76,
+      "psi_index": 601.3
+    },
+    {
+      "window": "2025-07",
+      "n_headlines": 9777,
+      "avg_aai": 0.0379,
+      "avg_bias_intensity": 0.3797,
+      "avg_vader": 0.0602,
+      "n_ai_agent": 525,
+      "n_dual_agent": 20,
+      "n_human_agent": 63,
+      "psi_index": 833.3
+    },
+    {
+      "window": "2025-08",
+      "n_headlines": 9548,
+      "avg_aai": 0.0388,
+      "avg_bias_intensity": 0.3787,
+      "avg_vader": 0.045,
+      "n_ai_agent": 459,
+      "n_dual_agent": 11,
+      "n_human_agent": 60,
+      "psi_index": 765.0
+    },
+    {
+      "window": "2025-09",
+      "n_headlines": 9800,
+      "avg_aai": 0.039,
+      "avg_bias_intensity": 0.3802,
+      "avg_vader": 0.0607,
+      "n_ai_agent": 504,
+      "n_dual_agent": 15,
+      "n_human_agent": 60,
+      "psi_index": 840.0
+    },
+    {
+      "window": "2025-10",
+      "n_headlines": 10339,
+      "avg_aai": 0.0367,
+      "avg_bias_intensity": 0.3811,
+      "avg_vader": 0.0546,
+      "n_ai_agent": 468,
+      "n_dual_agent": 7,
+      "n_human_agent": 73,
+      "psi_index": 641.1
+    },
+    {
+      "window": "2025-11",
+      "n_headlines": 10330,
+      "avg_aai": 0.0381,
+      "avg_bias_intensity": 0.3833,
+      "avg_vader": 0.0449,
+      "n_ai_agent": 527,
+      "n_dual_agent": 14,
+      "n_human_agent": 75,
+      "psi_index": 702.7
+    },
+    {
+      "window": "2025-12",
+      "n_headlines": 10303,
+      "avg_aai": 0.0384,
+      "avg_bias_intensity": 0.3826,
+      "avg_vader": 0.0465,
+      "n_ai_agent": 456,
+      "n_dual_agent": 10,
+      "n_human_agent": 63,
+      "psi_index": 723.8
+    },
+    {
+      "window": "2026-01",
+      "n_headlines": 10800,
+      "avg_aai": 0.0411,
+      "avg_bias_intensity": 0.3849,
+      "avg_vader": 0.0356,
+      "n_ai_agent": 522,
+      "n_dual_agent": 20,
+      "n_human_agent": 69,
+      "psi_index": 756.5
+    },
+    {
+      "window": "2026-02",
+      "n_headlines": 11175,
+      "avg_aai": 0.0442,
+      "avg_bias_intensity": 0.3864,
+      "avg_vader": 0.0245,
+      "n_ai_agent": 602,
+      "n_dual_agent": 19,
+      "n_human_agent": 78,
+      "psi_index": 771.8
+    },
+    {
+      "window": "2026-03",
+      "n_headlines": 11335,
+      "avg_aai": 0.0407,
+      "avg_bias_intensity": 0.3823,
+      "avg_vader": 0.0216,
+      "n_ai_agent": 579,
+      "n_dual_agent": 7,
+      "n_human_agent": 111,
+      "psi_index": 521.6
+    }
+  ],
+  "extrapolation": {
+    "months": [
+      "2026-04",
+      "2026-05",
+      "2026-06"
+    ],
+    "psi": [
+      651.8,
+      641.2,
+      630.6
+    ],
+    "aai": [
+      0.0415,
+      0.042,
+      0.0424
+    ],
+    "psi_ci_lo": [
+      410.9,
+      397.0,
+      382.9
+    ],
+    "psi_ci_hi": [
+      892.7,
+      885.3,
+      878.2
+    ],
+    "framing_note": "linear extrapolation, NOT a forecast"
+  },
+  "trend_stats": {
+    "psi_slope": -10.6041,
+    "psi_r2": 0.2776,
+    "psi_p_value": 0.017003
+  },
+  "clusters": [
+    {
+      "id": 2,
+      "name": "High Anxiety",
+      "size": 43731,
+      "pct": 24.4,
+      "aai_mean": 0.0517
+    },
+    {
+      "id": 0,
+      "name": "Moderate Bias",
+      "size": 68132,
+      "pct": 38.0,
+      "aai_mean": 0.0377
+    },
+    {
+      "id": 3,
+      "name": "Low Concern",
+      "size": 45176,
+      "pct": 25.2,
+      "aai_mean": 0.0272
+    },
+    {
+      "id": 1,
+      "name": "Neutral Reporting",
+      "size": 22333,
+      "pct": 12.5,
+      "aai_mean": 0.0253
+    }
+  ],
+  "cluster_stability_ari": 0.9408,
+  "bias_means": {
+    "fear_bias": 0.3333,
+    "optimism_bias": 0.3924,
+    "anthropomorphism": 0.3677,
+    "moral_panic": 0.4121,
+    "agency_attribution": 0.3457,
+    "techno_utopianism": 0.4646,
+    "economic_threat": 0.3255,
+    "control_loss": 0.3994
+  },
+  "top_features": [
+    {
+      "feature": "bias_optimism_bias",
+      "coefficient": 0.0161
+    },
+    {
+      "feature": "is_risk_category",
+      "coefficient": 0.0155
+    },
+    {
+      "feature": "bias_agency_attribution",
+      "coefficient": -0.0127
+    },
+    {
+      "feature": "vader_compound",
+      "coefficient": -0.0118
+    },
+    {
+      "feature": "bias_anthropomorphism",
+      "coefficient": 0.003
+    },
+    {
+      "feature": "month_num",
+      "coefficient": 0.0022
+    },
+    {
+      "feature": "psi_score",
+      "coefficient": 0.0017
+    },
+    {
+      "feature": "is_agency_category",
+      "coefficient": -0.0015
+    }
+  ],
+  "model_comparison": {
+    "regression_full": {
+      "OLS LinearReg": {
+        "r2": 0.2199,
+        "mae": 0.0536,
+        "rmse": 0.0824,
+        "cv_mean": 0.2113,
+        "cv_std": 0.013
+      },
+      "Ridge (alpha=1.0)": {
+        "r2": 0.2199,
+        "mae": 0.0536,
+        "rmse": 0.0824,
+        "cv_mean": 0.2113,
+        "cv_std": 0.013
+      },
+      "Lasso (alpha=0.01)": {
+        "r2": 0.0839,
+        "mae": 0.0593,
+        "rmse": 0.0893,
+        "cv_mean": 0.0821,
+        "cv_std": 0.0033
+      },
+      "Random Forest": {
+        "r2": 0.3014,
+        "mae": 0.0472,
+        "rmse": 0.078,
+        "cv_mean": 0.2914,
+        "cv_std": 0.0213
+      },
+      "Gradient Boosting": {
+        "r2": 0.2835,
+        "mae": 0.0488,
+        "rmse": 0.079,
+        "cv_mean": 0.2745,
+        "cv_std": 0.0182
+      }
+    },
+    "regression_honest": {
+      "OLS LinearReg": {
+        "r2": 0.0669,
+        "mae": 0.0591,
+        "rmse": 0.0901,
+        "cv_mean": 0.0605,
+        "cv_std": 0.0082
+      },
+      "Ridge (alpha=1.0)": {
+        "r2": 0.0669,
+        "mae": 0.0591,
+        "rmse": 0.0901,
+        "cv_mean": 0.0605,
+        "cv_std": 0.0082
+      },
+      "Lasso (alpha=0.01)": {
+        "r2": 0.0279,
+        "mae": 0.0616,
+        "rmse": 0.092,
+        "cv_mean": 0.0248,
+        "cv_std": 0.0019
+      },
+      "Random Forest": {
+        "r2": 0.1532,
+        "mae": 0.0538,
+        "rmse": 0.0859,
+        "cv_mean": 0.1404,
+        "cv_std": 0.0134
+      },
+      "Gradient Boosting": {
+        "r2": 0.1483,
+        "mae": 0.0551,
+        "rmse": 0.0861,
+        "cv_mean": 0.1379,
+        "cv_std": 0.0127
+      }
+    },
+    "classification": {
+      "Logistic Regression": {
+        "train_acc": 0.996,
+        "test_acc": 0.9946,
+        "gap": 0.0014
+      },
+      "DT pruned (d=5)": {
+        "train_acc": 0.7447,
+        "test_acc": 0.7439,
+        "gap": 0.0008
+      },
+      "DT unpruned (d=None)": {
+        "train_acc": 1.0,
+        "test_acc": 0.971,
+        "gap": 0.029
+      },
+      "Random Forest": {
+        "train_acc": 0.8377,
+        "test_acc": 0.8307,
+        "gap": 0.0071
+      },
+      "KNN (k=15)": {
+        "train_acc": 0.8809,
+        "test_acc": 0.8636,
+        "gap": 0.0174
+      }
+    }
+  },
+  "hypothesis_tests": [
+    {
+      "hypothesis": "H1: PSI upward trend",
+      "test_statistic": -10.6041,
+      "p_value": 0.017003,
+      "effect_size": 0.2776,
+      "effect_size_metric": "R-squared",
+      "verdict": "NOT supported"
+    },
+    {
+      "hypothesis": "H2: Risk > Products on AAI",
+      "test_statistic": 61.859,
+      "p_value": 0.0,
+      "effect_size": 0.7493,
+      "effect_size_metric": "Cohen's d",
+      "verdict": "SUPPORTED"
+    },
+    {
+      "hypothesis": "H3: Entity-named < Generic on AAI",
+      "test_statistic": -24.4668,
+      "p_value": 0.0,
+      "effect_size": -0.1333,
+      "effect_size_metric": "Cohen's d",
+      "verdict": "SUPPORTED"
+    },
+    {
+      "hypothesis": "H4: Human-mentioning > Other on IH",
+      "test_statistic": -5.2229,
+      "p_value": 0.0,
+      "effect_size": -0.032,
+      "effect_size_metric": "Cohen's d",
+      "verdict": "NOT supported"
+    },
+    {
+      "hypothesis": "H5: Release months > Baseline on PSI",
+      "test_statistic": 0.4806,
+      "p_value": 0.71321,
+      "effect_size": 0.8519,
+      "effect_size_metric": "Cohen's d",
+      "verdict": "NOT supported"
+    }
+  ],
+  "cross_metric": {
+    "psi_aai_correlation": 0.0125,
+    "psi_aai_p_value": 0.0,
+    "high_aai_invisible_pct": 90.95
+  },
+  "category_distribution": {
+    "Companies & Products": 28155,
+    "General AI": 20122,
+    "Safety & Risk": 15793,
+    "Agency & Autonomy": 12782,
+    "Policy & Governance": 12128,
+    "Creative Industries": 10814,
+    "Business": 10617,
+    "Society & Human Impact": 9840,
+    "Finance & Economy": 9078,
+    "Health & Science": 8804,
+    "Defense & Security": 8375,
+    "Infrastructure & Economy": 6568,
+    "Environment": 5718,
+    "Law & Government": 4878,
+    "Democracy & Disinformation": 4328,
+    "Education": 4274,
+    "Technology & Software": 3861,
+    "Transportation": 3237
+  },
+  "top_publishers": {
+    "Yahoo Finance": 4243,
+    "Nature": 4069,
+    "Forbes": 2315,
+    "PR Newswire": 1987,
+    "Reuters": 1910,
+    "CNBC": 1732,
+    "Business Insider": 1686,
+    "TechCrunch": 1574,
+    "Fortune": 1556,
+    "Bloomberg.com": 1180,
+    "PYMNTS.com": 1177,
+    "The Times of India": 1108,
+    "The Guardian": 1085,
+    "WSJ": 1067,
+    "Microsoft": 1033,
+    "Business Wire": 1018,
+    "Futurism": 946,
+    "Axios": 911,
+    "Fast Company": 855,
+    "SiliconANGLE": 799
+  },
+  "permutation_test": {
+    "real_r2": 0.0669,
+    "null_mean": -0.0001,
+    "null_std": 0.0001,
+    "emp_p": 0.0,
+    "n_perm": 200,
+    "verdict": "PASSES"
+  },
+  "allsides_validation": {
+    "n": 13891,
+    "pct_corpus": 7.7,
+    "psi_r": -0.0042,
+    "psi_p": 0.617132,
+    "aai_r": 0.0453,
+    "aai_p": 0.0,
+    "bias_r": 0.0113,
+    "bias_p": 0.182845
+  }
+}

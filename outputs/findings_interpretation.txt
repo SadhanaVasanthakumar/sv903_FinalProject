@@ -1,0 +1,81 @@
+DOMAIN-SPECIFIC FINDINGS INTERPRETATION
+(printed below; also saved to outputs/findings_interpretation.txt)
+
+FINDING 1 -- AI Agency Framing (PSI)
+-----------------------------------------------------------------
+Over 20 months (Aug 2024 - Mar 2026), the Power Shift Index
+decreased at -10.604 points/month (R-squared = 0.278,
+p = 0.0170).
+A negative slope indicates that AI-agent framing declined relative
+to human-agent framing over the observation window. This likely
+reflects growing coverage of human responses to AI -- regulation,
+policy debates, research -- outpacing pure AI-as-actor coverage.
+
+Why this matters for AI discourse:
+Media framing shapes how readers attribute responsibility. Sentences
+like 'AI made a decision' implicitly absolve the humans who built and
+deployed the system. Sentences like 'engineers configured the system to
+decide' restore agency to humans. Tracking this ratio over time reveals
+structural shifts in how the public discusses accountability for AI.
+
+FINDING 2 -- Anxiety in AI Coverage
+-----------------------------------------------------------------
+Mean AAI across the corpus is 0.037 on a [0,1] scale.
+Safety & Risk headlines have AAI 0.093 vs Companies &
+Products at 0.018 (Cohen's d = +0.749, 
+p = 0.00e+00). The effect size is medium.
+
+Why this matters:
+Anxiety is concentrated in the Safety & Risk topic-tier as expected,
+but it is not absent from product coverage. Even routine company news
+retains some anxiety vocabulary, suggesting the broader news ecosystem
+treats AI as inherently risk-adjacent.
+
+FINDING 3 -- Cognitive Bias Co-occurrence
+-----------------------------------------------------------------
+   moral_panic + control_loss: r = +0.879
+   optimism_bias + techno_utopianism: r = +0.862
+   fear_bias + moral_panic: r = +0.839
+
+Strong positive co-occurrence among negative-framing biases (fear,
+moral_panic, control_loss, economic_threat) and among positive ones
+(optimism, techno_utopianism). The two camps are largely separable,
+which suggests media coverage has bifurcated rather than producing
+nuanced middle-ground framing.
+
+FINDING 4 -- Headline Archetypes (with stability caveat)
+-----------------------------------------------------------------
+K-means clustering identified 4 archetypes. Cluster stability across
+random seeds, bootstrap subsamples, and feature subsets averaged
+ARI = 0.941.
+This is a stable cluster solution, so the interpretive names
+(High Anxiety, Moderate Bias, etc.) are defensible findings.
+
+FINDING 5 -- The Invisible Human (refined)
+-----------------------------------------------------------------
+92.4% of all 179K AI headlines contain ZERO vocabulary
+from any human-experience domain (grief, spirituality, love,
+bodily experience, dignity, community, childhood).
+
+Even conditioning on headlines that mention humans (workers,
+researchers, users, etc.), only 6.8% engage human-experience
+domains. The absence is not just topical -- it is structural.
+
+Why this matters:
+AI is increasingly described in news as if its human consequences
+are technical or economic, not experiential. The dimensions of human
+life that ethics and philosophy treat as central -- grief, meaning,
+dignity, love -- are absent even when humans are explicitly
+the subject of AI coverage.
+
+FINDING 6 -- Predictive Modeling (with honesty notes)
+-----------------------------------------------------------------
+Ridge regression on AAI achieves R-squared = 0.067 after
+removing circular features (bias dimensions sharing vocabulary
+with AAI components). Removing those features reduced R-squared
+from 0.220 to 0.067, indicating the full-feature
+score was inflated by vocabulary overlap rather than predictive signal.
+
+Decision tree classification of dominant_bias achieves
+74.4% test accuracy on 8 classes -- well above the
+random baseline of 12.5%.
