@@ -7,6 +7,14 @@ Sadhana Vasanthakumar
 
 ---
 
+> ⚠️ **IMPORTANT — READ BEFORE DOWNLOADING**
+>
+> This repository uses **Git LFS** for all CSV and database files. If you download the ZIP from GitHub or Codebench, every data file will appear as a 3-line pointer text file — not real data. **The only method that works is `git clone` + `git lfs pull`.** Full step-by-step instructions are in [`HOW_TO_DOWNLOAD_FILES.txt`](HOW_TO_DOWNLOAD_FILES.txt) at the root of this repo.
+>
+> Also: **please check all Codebench submissions, not just the most recent one.** Earlier submissions may include output files not present in the latest upload. The most complete version of everything is always here on GitHub.
+
+---
+
 ## Overview
 
 This project analyzes 179,372 AI news headlines scraped from 13,019 publishers across 20 monthly windows from August 2024 to March 2026. Three original analytical frameworks were built to measure how these headlines frame AI: the Power Shift Index (PSI), which tracks whether AI or humans appear as the grammatical subject of action verbs; the AI Anxiety Index (AAI), a weighted vocabulary score measuring fear and risk language; and the Invisible Human Framework, which measures how often AI coverage engages with human-experience vocabulary like grief, dignity, love, and community.
@@ -14,6 +22,39 @@ This project analyzes 179,372 AI news headlines scraped from 13,019 publishers a
 Key results: PSI declined at −10.6 points/month while remaining consistently above 700 (far above the balanced-framing threshold of 100); AAI rose at +0.00048 units/month with Safety and Risk headlines carrying five times the anxiety of product coverage; and 92.4% of all headlines contain zero vocabulary from any human-experience domain.
 
 **[Interactive Website](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** — live headline scorer, full figure gallery, cluster explorer, and corpus browser.
+
+---
+
+## Quick Start (Git LFS Required)
+
+```bash
+# 1. Install Git LFS (one-time setup — skip if already installed)
+#    macOS:         brew install git-lfs && git lfs install
+#    Ubuntu/WSL:    sudo apt install git-lfs && git lfs install
+#    Windows:       installer at https://git-lfs.com, then: git lfs install
+
+# 2. Clone the repository (do NOT use Download ZIP)
+git clone https://github.com/SadhanaVasanthakumar/sv903_FinalProject.git
+cd sv903_FinalProject
+
+# 3. Pull the actual data files (~300 MB)
+git lfs pull
+
+# 4. Verify the pull worked
+python -c "import pandas as pd; df = pd.read_csv('data/ai_headlines_full.csv', nrows=3); print(df)"
+# You should see 3 real headlines. If you see "version https://git-lfs..." the pull failed.
+
+# 5. Install dependencies
+pip install -r requirements.txt
+python -m nltk.downloader vader_lexicon
+
+# 6. Run the TA demo (8–12 minutes)
+jupyter notebook 05_ta_demo.ipynb
+# Then: Kernel → Restart & Run All
+# Results will be in outputs/demo/demo_summary.txt
+```
+
+> See [`HOW_TO_DOWNLOAD_FILES.txt`](HOW_TO_DOWNLOAD_FILES.txt) for full setup instructions and a troubleshooting table covering every common failure.
 
 ---
 
@@ -30,70 +71,58 @@ FinalProject/
 │
 ├── index.html                  # Self-contained interactive website
 ├── requirements.txt            # All Python dependencies with versions
+├── HOW_TO_DOWNLOAD_FILES.txt   # Full Git LFS setup guide and troubleshooting
 │
 ├── data/
 │   ├── ai_headlines_raw.csv         # 179,372 headlines, minimal columns [LFS]
 │   ├── ai_headlines_full.csv        # 179,372 headlines, full metadata [LFS]
-│   ├── ai_headlines_website.csv     # 3,000-headline stratified sample
+│   ├── ai_headlines_website.csv     # 3,000-headline stratified sample [LFS]
 │   ├── bias_observatory.db          # SQLite database (103MB) [LFS]
-│   ├── allsides.csv                 # AllSides political lean ratings
+│   ├── allsides.csv                 # AllSides political lean ratings [LFS]
 │   ├── figshare_headlines.csv       # Figshare baseline corpus [LFS]
 │   └── figshare_with_features.csv   # Figshare corpus with NLP features [LFS]
 │
 ├── outputs/
 │   ├── figures/                     # All 19 generated figures (PNG)
 │   ├── demo/                        # Output from 05_ta_demo.ipynb
-│   │   ├── features_demo.csv            # NLP feature table for demo sample
-│   │   ├── monthly_trend_demo.csv       # Monthly aggregates for demo sample
+│   │   ├── features_demo.csv            # NLP feature table for demo sample [LFS]
+│   │   ├── monthly_trend_demo.csv       # Monthly aggregates for demo sample [LFS]
 │   │   └── demo_summary.txt             # One-page text summary of all results
 │   ├── website_data.json            # Pre-computed data for the website
 │   ├── validation_summary.json      # PSI kappa, IH control comparison results
 │   ├── findings_interpretation.txt  # Domain-specific findings writeup
-│   ├── monthly_trend.csv            # Monthly PSI and AAI values
-│   ├── hypothesis_test_results.csv  # All five hypothesis test outputs
-│   ├── cluster_stability_report.csv # ARI scores across seeds and subsamples
-│   ├── lexicon_sensitivity.csv      # Keyword drop sensitivity analysis
-│   ├── summary_ci.csv               # Bootstrap confidence intervals
-│   └── gold_standard_labeled.csv   # 200 hand-labeled headlines
+│   ├── monthly_trend.csv            # Monthly PSI and AAI values [LFS]
+│   ├── hypothesis_test_results.csv  # All five hypothesis test outputs [LFS]
+│   ├── cluster_stability_report.csv # ARI scores across seeds and subsamples [LFS]
+│   ├── lexicon_sensitivity.csv      # Keyword drop sensitivity analysis [LFS]
+│   ├── summary_ci.csv               # Bootstrap confidence intervals [LFS]
+│   └── gold_standard_labeled.csv    # 200 hand-labeled headlines [LFS]
 │
 ├── checkpoints/                     # Monthly scraping checkpoints (raw)
-│   └── checkpoint_*.csv                 # One file per monthly window
+│   └── checkpoint_*.csv                 # One file per monthly window [LFS]
 │
 └── scraping_results_summary.json    # Full scraping session metadata
 ```
+
+> **[LFS]** — these files are Git LFS pointers in the zip download. They only contain real data after `git lfs pull`.
 
 ---
 
 ## How to Run
 
-**Prerequisites:** Python 3.10 or higher, Git LFS installed (see below).
+**Prerequisites:** Python 3.10 or higher, Git LFS installed (see Quick Start above).
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/sv903/FinalProject.git
-cd FinalProject
-
-# 2. Pull LFS files (large CSVs and the database)
-git lfs pull
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Download NLTK data (required for VADER)
-python -m nltk.downloader vader_lexicon
-```
-
-Then open JupyterLab or Jupyter Notebook and run the notebooks in order:
+Run the notebooks in order:
 
 | Notebook | What it does | Runtime |
 |---|---|---|
 | `00_scraping.ipynb` | Scrapes 179,372 headlines from Google News | ~11 hours |
 | `01_database.ipynb` | Builds SQLite database, runs SQL analysis | ~2 minutes |
-| `02_nlp_pipeline.ipynb` | Computes all NLP scores | ~12 minutes |
+| `02_nlp_pipeline.ipynb` | Computes all NLP scores | ~90 minutes |
 | `03_modeling.ipynb` | Trains regression, classification, clustering | ~8 minutes |
 | `04_validation.ipynb` | Runs validation and control corpus comparison | ~4 minutes |
 
-> **Note on Notebook 00:** The scraping run takes roughly 11 hours and makes 3,840 API calls. If you're reproducing the analysis from the provided data files rather than re-scraping from scratch, you can skip Notebook 00 entirely. All downstream notebooks read from `data/ai_headlines_raw.csv` and `data/ai_headlines_full.csv`, which are already included in this repository.
+> **Note on Notebook 00:** The scraping run takes roughly 11 hours and makes 3,840 API calls. Do not re-run it from scratch — Google News results change daily and a fresh run would produce a different sample. All downstream notebooks read from `data/ai_headlines_raw.csv` and `data/ai_headlines_full.csv`, which are already provided.
 
 ---
 
@@ -101,17 +130,12 @@ Then open JupyterLab or Jupyter Notebook and run the notebooks in order:
 
 `05_ta_demo.ipynb` is a self-contained notebook designed for grading and quick reproducibility verification. It runs the complete pipeline — database construction, NLP scoring, modeling, and validation — on a 500-headline stratified sample drawn from the full corpus with a fixed random seed (`random_state=42`), so results are identical on every run.
 
-**Expected runtime: 8–12 minutes on CPU.** The sentence-transformer encoding step is the bottleneck at roughly 60–90 seconds for 500 headlines.
-
-**To run the demo:**
+**Expected runtime: 8–12 minutes on CPU.**
 
 ```bash
-# From the repo root, after completing the setup steps above:
 jupyter notebook 05_ta_demo.ipynb
 # Then: Kernel → Restart & Run All
 ```
-
-**What the demo covers:**
 
 | Section | What it does |
 |---|---|
@@ -133,13 +157,19 @@ All outputs are written to `outputs/demo/`, including a `demo_summary.txt` with 
 
 ## Git LFS
 
-This repository uses [Git LFS](https://git-lfs.com) for files over 50MB. The following files are tracked with LFS:
+This repository uses [Git LFS](https://git-lfs.com) to store files over 50MB. **Every `.csv` and `.db` file** in this repo is LFS-tracked, including small output files.
 
-- `data/ai_headlines_full.csv` (~84MB)
-- `data/ai_headlines_raw.csv` (~19MB)
-- `data/bias_observatory.db` (~103MB)
-- `data/figshare_headlines.csv` (~12MB)
-- `data/figshare_with_features.csv` (~28MB)
+Files and their sizes:
+
+| File | Size |
+|---|---|
+| `data/bias_observatory.db` | ~103 MB |
+| `data/ai_headlines_full.csv` | ~84 MB |
+| `data/figshare_with_features.csv` | ~28 MB |
+| `data/ai_headlines_raw.csv` | ~19 MB |
+| `data/figshare_headlines.csv` | ~12 MB |
+| all output CSVs | ~50 MB |
+| **Total** | **~300 MB** |
 
 **Installing Git LFS:**
 
@@ -150,11 +180,13 @@ brew install git-lfs
 # Ubuntu / Debian / WSL
 sudo apt install git-lfs
 
-# After installing the binary (all platforms)
+# After installing the binary (all platforms — required)
 git lfs install
 ```
 
-If you clone the repository without Git LFS installed, the large files will appear as small pointer files rather than the actual data. Run `git lfs pull` after installing to download the real files.
+If you clone without Git LFS installed, all data files will appear as small pointer text files. Run `git lfs pull` after installing to download the real files.
+
+> Full setup instructions and troubleshooting: [`HOW_TO_DOWNLOAD_FILES.txt`](HOW_TO_DOWNLOAD_FILES.txt)
 
 ---
 
@@ -169,10 +201,10 @@ If you clone the repository without Git LFS installed, the large files will appe
 ---
 
 ## Interactive Website
- 
+
 The project website is a single self-contained HTML file (`index.html`) with no server dependencies. It includes a live headline scanner using the same keyword lexicons from the notebooks, all 19 figures with descriptions, cluster explorer, monthly trend charts, and the full corpus breakdown.
- 
-#### The website is hosted at **[sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
+
+The website is hosted at **[sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/)** and can also be opened locally by simply opening `index.html` in any browser.
 
 ---
 
@@ -197,6 +229,18 @@ See `requirements.txt` for pinned versions. The main packages are:
 - `matplotlib`, `seaborn`, `networkx` — visualization
 
 The sentence-transformers model (~80MB) is downloaded from HuggingFace Hub on first run and cached in `~/.cache/huggingface/`. An internet connection is required the first time only.
+
+---
+
+## Important Links
+
+| Resource | Link |
+|---|---|
+| Interactive Website | [sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/) |
+| GitHub Repository | [github.com/SadhanaVasanthakumar/sv903_FinalProject](https://github.com/SadhanaVasanthakumar/sv903_FinalProject) |
+| Setup Guide | [`HOW_TO_DOWNLOAD_FILES.txt`](HOW_TO_DOWNLOAD_FILES.txt) |
+| Git LFS Installer | [git-lfs.com](https://git-lfs.com) |
+| Figshare Baseline Dataset | [figshare.com/articles/...](https://figshare.com/articles/dataset/Dataset_of_AI-related_News_Headlines_Aug_2024_Jul_2025_/30189736) |
 
 ---
 
