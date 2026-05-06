@@ -104,4 +104,4 @@ Figures not included in the main report due to page constraints:
 | GitHub Repository | [https://github.com/sv903/FinalProject](https://github.com/SadhanaVasanthakumar/sv903_FinalProject/tree/main) |
 | README | [https://github.com/sv903/FinalProject/blob/main/README.md](https://github.com/SadhanaVasanthakumar/sv903_FinalProject/blob/main/README.md) |
 | Figshare Baseline Dataset | https://figshare.com/articles/dataset/Dataset_of_AI-related_News_Headlines_Aug_2024_Jul_2025_/30189736 |
-| Demo Video | [Link to be added] |
+| Demo Video | [https://www.youtube.com/watch?v=5QufJEu3b0U](https://www.youtube.com/watch?v=5QufJEu3b0U) |
