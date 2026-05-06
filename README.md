@@ -238,6 +238,7 @@ The sentence-transformers model (~80MB) is downloaded from HuggingFace Hub on fi
 |---|---|
 | Interactive Website | [sadhanavasanthakumar.github.io/sv903_FinalProject](https://sadhanavasanthakumar.github.io/sv903_FinalProject/) |
 | GitHub Repository | [github.com/SadhanaVasanthakumar/sv903_FinalProject](https://github.com/SadhanaVasanthakumar/sv903_FinalProject) |
+| Demo Video | [https://www.youtube.com/watch?v=5QufJEu3b0U](https://www.youtube.com/watch?v=5QufJEu3b0U) |
 | Setup Guide | [`HOW_TO_DOWNLOAD_FILES.txt`](HOW_TO_DOWNLOAD_FILES.txt) |
 | Git LFS Installer | [git-lfs.com](https://git-lfs.com) |
 | Figshare Baseline Dataset | [figshare.com/articles/...](https://figshare.com/articles/dataset/Dataset_of_AI-related_News_Headlines_Aug_2024_Jul_2025_/30189736) |
